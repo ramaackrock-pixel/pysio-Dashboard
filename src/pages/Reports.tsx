@@ -19,13 +19,9 @@ import {
   FileText,
   Calendar,
   Download,
-  Filter,
   TrendingUp,
   TrendingDown,
   Activity,
-  Users,
-  Clock,
-  IndianRupee,
   ChevronDown
 } from 'lucide-react';
 import {
@@ -37,7 +33,7 @@ import {
 } from '../data/reports';
 
 export function Reports() {
-  const [timeRange, setTimeRange] = useState('This Quarter');
+  const [timeRange] = useState('This Quarter');
 
   return (
     <Layout>

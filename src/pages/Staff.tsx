@@ -8,15 +8,11 @@ import {
   Calendar,
   Clock,
   Briefcase,
-  Users,
-  AlertCircle,
-  FileText,
   ChevronLeft,
   ChevronRight,
   Filter,
   Download,
   Activity,
-  UserCheck,
   Receipt
 } from 'lucide-react';
 import { 
@@ -346,7 +342,7 @@ function AttendanceView() {
   );
 }
 
-function SchedulesView({ searchTerm }: { searchTerm: string }) {
+function SchedulesView({ }: { searchTerm: string }) {
   const getShiftBadge = (shift: ShiftType) => {
     switch (shift) {
       case 'Morning': return 'bg-teal-50 text-teal-600';
@@ -459,7 +455,7 @@ function SchedulesView({ searchTerm }: { searchTerm: string }) {
   );
 }
 
-function PayrollView({ searchTerm }: { searchTerm: string }) {
+function PayrollView({ }: { searchTerm: string }) {
   const [currentMonth, setCurrentMonth] = useState('October 2023');
 
   return (
@@ -555,15 +551,7 @@ function BarChart({ size }: { size: number }) {
   );
 }
 
-function BarChart2Icon({ size }: { size: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 20V10" />
-      <path d="M12 20V4" />
-      <path d="M6 20V14" />
-    </svg>
-  );
-}
+
 
 function ChevronUp({ size }: { size: number }) {
   return (
