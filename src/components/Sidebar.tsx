@@ -7,7 +7,7 @@ export function Sidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem('physio_auth');
-    navigate('/login');
+    navigate('/');
   };
 
   const navItems = [
