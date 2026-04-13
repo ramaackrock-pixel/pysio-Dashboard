@@ -2,22 +2,26 @@ import { useState, useMemo } from 'react';
 import { Layout } from '@/components/Layout';
 import { ChevronDown, FilterX, UserPlus, ClipboardCheck, ShieldAlert, ChevronLeft, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import { useSearch } from '@/context/SearchContext';
-import { INITIAL_PATIENTS } from '@/data/patients';
+import { useAppData } from '@/context/AppDataContext';
+import EditPatient from '../components/dashboard/EditPatient';
 
 const ITEMS_PER_PAGE = 5;
 
 export function Patients() {
   const { searchQuery } = useSearch();
-  const [patients, setPatients] = useState(INITIAL_PATIENTS);
+  const { patients, addPatient, updatePatient, deletePatient } = useAppData();
   const [branchFilter, setBranchFilter] = useState('All Branches');
   const [statusFilter, setStatusFilter] = useState('All Statuses');
   const [dateFilter, setDateFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [editingPatient, setEditingPatient] = useState<any>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const filteredPatients = useMemo(() => {
     return patients.filter((p) => {
-      const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            p.id.toLowerCase().includes(searchQuery.toLowerCase());
+      const nameMatch = p.name ? p.name.toLowerCase().includes(searchQuery.toLowerCase()) : false;
+      const idMatch = p.id ? p.id.toLowerCase().includes(searchQuery.toLowerCase()) : false;
+      const matchesSearch = nameMatch || idMatch;
       const matchesBranch = branchFilter === 'All Branches' || p.branch === branchFilter;
       const matchesStatus = statusFilter === 'All Statuses' || p.status === statusFilter;
       const matchesDate = !dateFilter || p.lastVisit.includes(dateFilter);
@@ -33,12 +37,43 @@ export function Patients() {
 
   const handleDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this patient record?')) {
-      setPatients(patients.filter(p => p.id !== id));
+      deletePatient(id);
     }
   };
 
-  const handleEdit = (name: string) => {
-    alert(`Editing flow for ${name} initialized.`);
+  const handleEdit = (patient: any) => {
+    setEditingPatient(patient);
+  };
+
+  const handleSavePatient = (updatedPatient: any) => {
+    // Generate appropriate styling for the newly selected status
+    let statusColor = updatedPatient.statusColor;
+    if (updatedPatient.status === 'ACTIVE') statusColor = 'bg-[#e1f5f5] text-[#5ab2b2] border border-[#b2dfdf]';
+    if (updatedPatient.status === 'CRITICAL') statusColor = 'bg-[#fff5f4] text-[#c73a3a] border border-[#ffdbdb]';
+    if (updatedPatient.status === 'PENDING') statusColor = 'bg-[#fff8e6] text-[#b38600] border border-[#ffeca3]';
+    if (updatedPatient.status === 'DISCHARGED') statusColor = 'bg-[#f4f6f8] text-[#5c6d86] border border-[#d6dde9]';
+
+    const finalizedPatient = { ...updatedPatient, statusColor };
+    
+    // Update initials if the name changed
+    if (finalizedPatient.name) {
+       finalizedPatient.initials = finalizedPatient.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase();
+    }
+
+    if (editingPatient) {
+      updatePatient(finalizedPatient);
+      setEditingPatient(null);
+    } else {
+      // Add new patient
+      const newPatient = {
+        ...finalizedPatient,
+        id: finalizedPatient.id || `#PID-${Math.floor(Math.random() * 9000) + 1000}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`,
+        initialsBg: 'bg-teal-100 text-teal-700', // Default bg
+        lastVisit: finalizedPatient.lastVisit || new Date().toLocaleDateString('en-US')
+      };
+      addPatient(newPatient);
+      setIsAddModalOpen(false);
+    }
   };
 
   const handleClearFilters = () => {
@@ -57,7 +92,10 @@ export function Patients() {
             Manage all patient records across clinical departments.
           </p>
         </div>
-        <button className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2">
+        <button 
+          onClick={() => { setEditingPatient(null); setIsAddModalOpen(true); }}
+          className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
+        >
           <span className="text-lg leading-none">+</span>
           <span>New Patient</span>
         </button>
@@ -156,7 +194,7 @@ export function Patients() {
                   <td className="px-6 py-4 text-center">
                     <div className="flex items-center justify-center space-x-2">
                       <button 
-                        onClick={() => handleEdit(patient.name)}
+                        onClick={() => handleEdit(patient)}
                         className="text-blue-500 hover:text-blue-700 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
                         title="Edit"
                       >
@@ -256,6 +294,13 @@ export function Patients() {
           </div>
         </div>
       </div>
+
+      <EditPatient 
+        patient={editingPatient} 
+        isOpen={!!editingPatient || isAddModalOpen} 
+        onClose={() => { setEditingPatient(null); setIsAddModalOpen(false); }}
+        onSave={handleSavePatient}
+      />
     </Layout>
   );
 }

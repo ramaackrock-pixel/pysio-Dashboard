@@ -16,47 +16,67 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
-  Receipt
+  Receipt,
+  UserPlus
 } from 'lucide-react';
-import { BILLING_STATS, INITIAL_INVOICES } from '../data/billing';
+import { useAppData } from '@/context/AppDataContext';
+import { BILLING_STATS } from '../data/billing';
 import type { Invoice, InvoiceStatus } from '../types/billing';
+import InvoiceModal from '@/components/dashboard/InvoiceModal';
+import { useSearch } from '@/context/SearchContext';
 
 export function Billing() {
-  const [invoicesData, setInvoicesData] = useState<Invoice[]>(INITIAL_INVOICES);
+  const { searchQuery } = useSearch();
+  const { invoices: invoicesData, addInvoice, updateInvoice } = useAppData();
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<InvoiceStatus | 'All'>('All');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const stats = BILLING_STATS;
   const filteredInvoices = invoicesData.filter(invoice => {
+    const activeSearch = searchTerm || searchQuery;
+    const patientName = invoice.patientName || '';
     const matchesSearch = 
-      invoice.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.id.toLowerCase().includes(searchTerm.toLowerCase());
+      patientName.toLowerCase().includes(activeSearch.toLowerCase()) ||
+      invoice.id.toLowerCase().includes(activeSearch.toLowerCase());
     const matchesStatus = statusFilter === 'All' || invoice.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const handleStatusUpdate = (id: string, newStatus: InvoiceStatus) => {
-    setInvoicesData(prev => prev.map(inv => {
-      if (inv.id !== id) return inv;
-      
-      let paidAmount = inv.paidAmount;
-      let dueAmount = inv.dueAmount;
+    const invoice = invoicesData.find(inv => inv.id === id);
+    if (!invoice) return;
 
-      if (newStatus === 'PAID') {
-        paidAmount = inv.totalAmount;
-        dueAmount = 0;
-      } else if (newStatus === 'PENDING' || newStatus === 'OVERDUE') {
-        paidAmount = 0;
-        dueAmount = inv.totalAmount;
-      } else if (newStatus === 'PARTIALLY PAID') {
-        paidAmount = inv.totalAmount * 0.4;
-        dueAmount = inv.totalAmount * 0.6;
-      }
+    let paidAmount = invoice.paidAmount;
+    let dueAmount = invoice.dueAmount;
 
-      return { ...inv, status: newStatus, paidAmount, dueAmount };
-    }));
+    if (newStatus === 'PAID') {
+      paidAmount = invoice.totalAmount;
+      dueAmount = 0;
+    } else if (newStatus === 'PENDING' || newStatus === 'OVERDUE') {
+      paidAmount = 0;
+      dueAmount = invoice.totalAmount;
+    } else if (newStatus === 'PARTIALLY PAID') {
+      paidAmount = invoice.totalAmount * 0.4;
+      dueAmount = invoice.totalAmount * 0.6;
+    }
+
+    updateInvoice({ ...invoice, status: newStatus, paidAmount, dueAmount });
     setActiveMenuId(null);
+  };
+
+  const handleSaveInvoice = (data: any) => {
+    const newInvoice = {
+      ...data,
+      id: `INV-${Math.floor(Math.random() * 100000)}`,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      dueAmount: data.totalAmount - data.paidAmount,
+      initials: data.patientName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase(),
+      initialsBg: 'bg-emerald-100 text-emerald-700'
+    };
+    addInvoice(newInvoice);
+    setIsModalOpen(false);
   };
 
   const getStatusStyles = (status: InvoiceStatus) => {
@@ -92,11 +112,20 @@ export function Billing() {
             <h1 className="text-3xl font-bold text-slate-800">Billing</h1>
             <p className="text-slate-500 mt-1">Manage invoices and payments</p>
           </div>
-          <button className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group">
-            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
+          >
+            <UserPlus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
             <span>Create Invoice</span>
           </button>
         </div>
+
+        <InvoiceModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveInvoice}
+        />
 
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

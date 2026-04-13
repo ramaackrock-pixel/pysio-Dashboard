@@ -17,28 +17,34 @@ import {
   Trash2,
   Eye
 } from 'lucide-react';
-import { INITIAL_MEDICAL_RECORDS } from '@/data/medicalRecords';
+import { useAppData } from '@/context/AppDataContext';
+import { useSearch } from '@/context/SearchContext';
 import type { MedicalRecord, MedicalRecordType } from '@/types/medicalRecord';
+import RecordModal from '@/components/dashboard/RecordModal';
 
 const ITEMS_PER_PAGE = 5;
 
 export function MedicalRecords() {
-  const [records, setRecords] = useState<MedicalRecord[]>(INITIAL_MEDICAL_RECORDS);
+  const { searchQuery } = useSearch();
+  const { medicalRecords, addMedicalRecord, deleteMedicalRecord } = useAppData();
   const [searchTerm, setSearchTerm] = useState('');
   const [recordTypeFilter, setRecordTypeFilter] = useState<string>('All Status');
   const [branchFilter, setBranchFilter] = useState<string>('All Branches');
   const [currentPage, setCurrentPage] = useState(1);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [viewingRecord, setViewingRecord] = useState<MedicalRecord | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredRecords = useMemo(() => {
-    return records.filter(record => {
-      const matchesSearch = record.patientName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          record.pid.toLowerCase().includes(searchTerm.toLowerCase());
+    return medicalRecords.filter(record => {
+      const activeSearch = searchTerm || searchQuery;
+      const patientMatch = record.patientName ? record.patientName.toLowerCase().includes(activeSearch.toLowerCase()) : false;
+      const pidMatch = record.pid ? record.pid.toLowerCase().includes(activeSearch.toLowerCase()) : false;
+      const matchesSearch = patientMatch || pidMatch;
       const matchesType = recordTypeFilter === 'All Status' || record.recordType === recordTypeFilter;
       return matchesSearch && matchesType;
     });
-  }, [records, searchTerm, recordTypeFilter]);
+  }, [medicalRecords, searchTerm, searchQuery, recordTypeFilter]);
 
   const totalPages = Math.ceil(filteredRecords.length / ITEMS_PER_PAGE) || 1;
   const paginatedRecords = filteredRecords.slice(
@@ -55,9 +61,20 @@ export function MedicalRecords() {
 
   const handleDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this medical record?')) {
-      setRecords(prev => prev.filter(r => r.id !== id));
+      deleteMedicalRecord(id);
       setActiveMenuId(null);
     }
+  };
+
+  const handleSaveRecord = (data: any) => {
+    const newRecord = {
+      ...data,
+      id: Math.random().toString(36).substr(2, 9),
+      initials: data.patientName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase(),
+      initialsBg: 'bg-indigo-100 text-indigo-700'
+    };
+    addMedicalRecord(newRecord);
+    setIsModalOpen(false);
   };
 
   const handleView = (record: MedicalRecord) => {
@@ -84,7 +101,10 @@ export function MedicalRecords() {
             View and manage patient medical documents and treatment history
           </p>
         </div>
-        <button className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
+        >
           <Plus size={18} />
           <span>Add Record</span>
         </button>
@@ -273,6 +293,12 @@ export function MedicalRecords() {
           </div>
         </div>
       </div>
+
+      <RecordModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveRecord}
+      />
 
       {/* View Detail Modal */}
       {viewingRecord && (

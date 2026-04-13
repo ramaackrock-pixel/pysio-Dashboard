@@ -15,17 +15,32 @@ import {
   Activity,
   Receipt
 } from 'lucide-react';
+import { useAppData } from '@/context/AppDataContext';
 import { 
-  STAFF_MEMBERS, 
   ATTENDANCE_RECORDS, 
   STAFF_SCHEDULES, 
   PAYROLL_RECORDS 
 } from '../data/staff';
 import type { StaffTab, AttendanceStatus, ShiftType } from '../types/staff';
+import StaffModal from '@/components/dashboard/StaffModal';
+import { useSearch } from '@/context/SearchContext';
 
 export function Staff() {
+  const { searchQuery } = useSearch();
+  const { addStaff } = useAppData();
   const [activeTab, setActiveTab] = useState<StaffTab>('List');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSaveStaff = (data: any) => {
+    const newStaff = {
+      ...data,
+      id: `STF-${Math.floor(Math.random() * 10000)}`,
+      department: data.role === 'Admin / Receptionist' ? 'Administration' : 'Physiotherapy'
+    };
+    addStaff(newStaff);
+    setIsModalOpen(false);
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -46,11 +61,20 @@ export function Staff() {
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Staff</h1>
             <p className="text-slate-500 mt-1">Manage clinic staff and operations</p>
           </div>
-          <button className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
+          >
             <UserPlus size={20} className="group-hover:rotate-12 transition-transform" />
             <span>Add Staff</span>
           </button>
         </div>
+
+        <StaffModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveStaff}
+        />
 
         {/* Custom Tabs */}
         <div className="bg-slate-100/50 p-1.5 rounded-2xl inline-flex flex-wrap md:flex-nowrap gap-1 border border-slate-200/50">
@@ -76,12 +100,17 @@ export function Staff() {
   );
 }
 
-function StaffListView({ searchTerm }: { searchTerm: string }) {
-  const staff = STAFF_MEMBERS.filter(s => 
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+function StaffListView({ searchTerm: passedSearch }: { searchTerm: string }) {
+  const { searchQuery } = useSearch();
+  const { staff: allStaff } = useAppData();
+  const [localSearch, setLocalSearch] = useState('');
+  
+  const staff = allStaff.filter(s => {
+    const activeSearch = localSearch || searchQuery;
+    return s.name.toLowerCase().includes(activeSearch.toLowerCase()) ||
+    s.email.toLowerCase().includes(activeSearch.toLowerCase()) ||
+    s.id.toLowerCase().includes(activeSearch.toLowerCase());
+  });
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -93,6 +122,8 @@ function StaffListView({ searchTerm }: { searchTerm: string }) {
             <input 
               type="text" 
               placeholder="Search by name, email or ID..." 
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
               className="w-full pl-12 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
             />
           </div>

@@ -15,17 +15,36 @@ import {
   LayoutGrid,
   List as ListIcon
 } from 'lucide-react';
-import { CLINIC_BRANCHES } from '../data/branches';
+import { useAppData } from '@/context/AppDataContext';
 import type { ClinicBranch, BranchStatus } from '../types/branches';
+import BranchModal from '@/components/dashboard/BranchModal';
 
 export function Branches() {
+  const { branches: allBranches, addBranch } = useAppData();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const branches = CLINIC_BRANCHES.filter(b => 
+  const branches = allBranches.filter(b => 
     b.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     b.manager.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleSaveBranch = (data: any) => {
+    const newBranch = {
+      ...data,
+      id: `BR-${Math.floor(Math.random() * 1000)}`,
+      staffCount: 0,
+      patientCount: 0,
+      totalRevenue: 0,
+      performance: {
+        weeklyRevenue: [0, 0, 0, 0, 0, 0, 0],
+        revenueGrowth: 0
+      }
+    };
+    addBranch(newBranch);
+    setIsModalOpen(false);
+  };
 
   const getStatusColor = (status: BranchStatus) => {
     switch (status) {
@@ -45,11 +64,20 @@ export function Branches() {
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Branches</h1>
             <p className="text-slate-500 mt-1">Manage your clinic network and facility performance</p>
           </div>
-          <button className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
+          >
             <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
             <span>Add New Branch</span>
           </button>
         </div>
+
+        <BranchModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveBranch}
+        />
 
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">

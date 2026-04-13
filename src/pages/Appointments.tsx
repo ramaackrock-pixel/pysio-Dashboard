@@ -15,14 +15,19 @@ import {
   ClipboardList,
   XCircle
 } from 'lucide-react';
-import { INITIAL_APPOINTMENTS } from '@/data/appointments';
+import { useAppData } from '@/context/AppDataContext';
+import { useSearch } from '@/context/SearchContext';
+import AppointmentModal from '@/components/dashboard/AppointmentModal';
 
 const ITEMS_PER_PAGE = 5;
 
 export function Appointments() {
-  const [appointments, setAppointments] = useState(INITIAL_APPOINTMENTS);
+  const { searchQuery } = useSearch();
+  const { appointments, addAppointment, updateAppointment, deleteAppointment } = useAppData();
   const [activeMenuId, setActiveMenuId] = useState<number | null>(null);
   const [viewingAppointment, setViewingAppointment] = useState<any | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<any | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   
   // Filters
@@ -42,16 +47,21 @@ export function Appointments() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [menuRef]);
+  }, []);
 
   const filteredAppointments = useMemo(() => {
     return appointments.filter((app) => {
+      const patientName = app.patientName || '';
+      const pid = app.pid || '';
+      const matchesSearch = 
+        patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        pid.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesBranch = branchFilter === 'All Branches' || app.branch === branchFilter;
       const matchesTherapist = therapistFilter === 'All Therapists' || app.therapist === therapistFilter;
       const matchesStatus = statusFilter === 'All Status' || app.status === statusFilter;
-      return matchesBranch && matchesTherapist && matchesStatus;
+      return matchesSearch && matchesBranch && matchesTherapist && matchesStatus;
     });
-  }, [appointments, branchFilter, therapistFilter, statusFilter]);
+  }, [appointments, searchQuery, branchFilter, therapistFilter, statusFilter]);
 
   const totalPages = Math.ceil(filteredAppointments.length / ITEMS_PER_PAGE) || 1;
   const paginatedAppointments = filteredAppointments.slice(
@@ -66,13 +76,28 @@ export function Appointments() {
     setCurrentPage(1);
   };
 
+  const handleSaveAppointment = (data: any) => {
+    if (editingAppointment) {
+      updateAppointment(data);
+    } else {
+      const newAppointment = {
+        ...data,
+        id: Math.floor(Math.random() * 10000),
+        initials: data.patientName ? data.patientName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : '??',
+        initialsBg: 'bg-teal-100 text-teal-700'
+      };
+      addAppointment(newAppointment);
+    }
+    setIsModalOpen(false);
+    setEditingAppointment(null);
+  };
+
   const statusColors: Record<string, string> = {
     CONFIRMED: 'text-[#2e8b8b] border-[#2e8b8b] bg-emerald-50',
     PENDING: 'text-orange-500 border-orange-500 bg-orange-50',
     COMPLETED: 'text-blue-500 border-blue-500 bg-blue-50',
     CANCELLED: 'text-red-500 border-red-500 bg-red-50',
   };
-
 
   return (
     <Layout>
@@ -83,7 +108,10 @@ export function Appointments() {
             Manage all scheduled appointments
           </p>
         </div>
-        <button className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2">
+        <button 
+          onClick={() => { setEditingAppointment(null); setIsModalOpen(true); }}
+          className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
+        >
           <span className="text-lg leading-none">+</span>
           <span>Book Appointment</span>
         </button>
@@ -95,8 +123,8 @@ export function Appointments() {
           <div>
             <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Date Picker</label>
             <div className="relative">
-              <div className="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm rounded-lg px-4 py-2.5 flex items-center space-x-2">
-                <Calendar size={16} className="text-slate-400" />
+              <div className="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm rounded-lg px-4 py-2.5 flex items-center space-x-2 text-[12px]">
+                <Calendar size={14} className="text-slate-400" />
                 <span>Today, Oct 24, 2023</span>
               </div>
             </div>
@@ -108,11 +136,12 @@ export function Appointments() {
               <select 
                 value={branchFilter}
                 onChange={(e) => { setBranchFilter(e.target.value); setCurrentPage(1); }}
-                className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm rounded-lg px-4 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[#5ab2b2]"
+                className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs rounded-lg px-4 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[#5ab2b2]"
               >
                 <option>All Branches</option>
                 <option>Downtown Clinic</option>
                 <option>Westside Medical</option>
+                <option>Central Medical Plaza</option>
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             </div>
@@ -124,12 +153,13 @@ export function Appointments() {
               <select 
                 value={therapistFilter}
                 onChange={(e) => { setTherapistFilter(e.target.value); setCurrentPage(1); }}
-                className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm rounded-lg px-4 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[#5ab2b2]"
+                className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs rounded-lg px-4 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[#5ab2b2]"
               >
                 <option>All Therapists</option>
                 <option>Dr. Sarah Miller</option>
                 <option>Dr. James Wilson</option>
                 <option>Dr. Elena Costa</option>
+                <option>Dr. Julian Vance</option>
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             </div>
@@ -141,7 +171,7 @@ export function Appointments() {
               <select 
                 value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
-                className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm rounded-lg px-4 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[#5ab2b2]"
+                className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs rounded-lg px-4 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[#5ab2b2]"
               >
                 <option>All Status</option>
                 <option>CONFIRMED</option>
@@ -155,7 +185,7 @@ export function Appointments() {
         </div>
         <button 
           onClick={handleClearFilters}
-          className="mt-6 text-[#1e85b4] font-bold text-sm hover:underline flex items-center space-x-2"
+          className="mt-6 text-[#1e85b4] font-bold text-xs hover:underline flex items-center space-x-2"
         >
           <span>Clear filters</span>
         </button>
@@ -177,7 +207,7 @@ export function Appointments() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {paginatedAppointments.map((app) => (
+              {paginatedAppointments.length > 0 ? paginatedAppointments.map((app) => (
                 <tr key={app.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="font-bold text-slate-800">{app.time}</div>
@@ -201,7 +231,7 @@ export function Appointments() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="font-bold text-[10px] tracking-wider text-[#5ab2b2]">
+                    <span className={`font-bold text-[10px] tracking-wider px-2 py-0.5 rounded-full border ${statusColors[app.status]}`}>
                       {app.status}
                     </span>
                   </td>
@@ -230,7 +260,8 @@ export function Appointments() {
                         </button>
                         <button 
                           onClick={() => {
-                            alert(`Edit flow for ${app.patientName}`);
+                            setEditingAppointment(app);
+                            setIsModalOpen(true);
                             setActiveMenuId(null);
                           }}
                           className="w-full text-left px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-[#dcf4f4] hover:text-[#2e8b8b] flex items-center space-x-2"
@@ -241,7 +272,7 @@ export function Appointments() {
                         <button 
                           onClick={() => {
                             if(confirm(`Delete appointment for ${app.patientName}?`)) {
-                              setAppointments(appointments.filter(a => a.id !== app.id));
+                              deleteAppointment(app.id);
                             }
                             setActiveMenuId(null);
                           }}
@@ -254,14 +285,20 @@ export function Appointments() {
                     )}
                   </td>
                 </tr>
-              ))}
+              )) : (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-slate-500 font-medium italic">
+                    No appointments found matching your filters.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         <div className="p-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-slate-50/50">
-          <span className="font-medium uppercase text-[10px] tracking-wider font-bold">
-            Showing <span className="text-[#5ab2b2]">{paginatedAppointments.length}</span> of {filteredAppointments.length} Scheduled Today
+          <span className="font-medium uppercase text-[10px] tracking-wider font-bold text-slate-400">
+            Showing <span className="text-[#5ab2b2]">{paginatedAppointments.length}</span> of {filteredAppointments.length} Scheduled
           </span>
           <div className="flex items-center space-x-1 font-semibold">
             <button 
@@ -275,7 +312,7 @@ export function Appointments() {
               <button 
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
+                className={`w-7 h-7 flex items-center justify-center rounded-lg transition-colors text-xs ${
                   currentPage === page 
                     ? 'bg-[#2e8b8b] text-white shadow-sm' 
                     : 'text-[#2e8b8b] hover:bg-teal-50'
@@ -296,13 +333,15 @@ export function Appointments() {
       </div>
 
       {/* Stats Cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-auto">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm flex items-center space-x-4">
           <div className="p-3 bg-emerald-50 rounded-lg">
             <CheckCircle2 size={24} className="text-emerald-500" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-slate-800">18</div>
+            <div className="text-2xl font-bold text-slate-800">
+              {appointments.filter(a => a.status === 'CONFIRMED').length}
+            </div>
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">CONFIRMED</p>
           </div>
         </div>
@@ -312,7 +351,9 @@ export function Appointments() {
             <Clock size={24} className="text-orange-500" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-slate-800">4</div>
+            <div className="text-2xl font-bold text-slate-800">
+              {appointments.filter(a => a.status === 'PENDING').length}
+            </div>
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">PENDING</p>
           </div>
         </div>
@@ -322,7 +363,9 @@ export function Appointments() {
             <ClipboardList size={24} className="text-blue-500" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-slate-800">12</div>
+            <div className="text-2xl font-bold text-slate-800">
+              {appointments.filter(a => a.status === 'COMPLETED').length}
+            </div>
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">COMPLETED</p>
           </div>
         </div>
@@ -332,17 +375,27 @@ export function Appointments() {
             <XCircle size={24} className="text-red-500" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-slate-800">2</div>
+            <div className="text-2xl font-bold text-slate-800">
+              {appointments.filter(a => a.status === 'CANCELLED').length}
+            </div>
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">CANCELLED</p>
           </div>
         </div>
       </div>
 
+      {/* Appointment Modal */}
+      <AppointmentModal 
+        isOpen={isModalOpen}
+        appointment={editingAppointment}
+        onClose={() => { setIsModalOpen(false); setEditingAppointment(null); }}
+        onSave={handleSaveAppointment}
+      />
+
       {/* View Detail Modal */}
       {viewingAppointment && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-            <div className={`h-24 ${viewingAppointment.initialsBg} flex items-end justify-between px-8 pb-4`}>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200" onClick={() => setViewingAppointment(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in slide-in-from-bottom-4 duration-300" onClick={e => e.stopPropagation()}>
+            <div className={`h-24 ${viewingAppointment.initialsBg} flex items-end justify-between px-8 pb-4 relative`}>
               <div className="flex items-center space-x-4 translate-y-8">
                 <div className={`w-20 h-20 rounded-2xl border-4 border-white shadow-md flex items-center justify-center text-2xl font-bold ${viewingAppointment.initialsBg}`}>
                   {viewingAppointment.initials}
@@ -350,7 +403,7 @@ export function Appointments() {
                 <div>
                   <h3 className="text-xl font-bold text-slate-800">{viewingAppointment.patientName}</h3>
                   <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${statusColors[viewingAppointment.status]}`}>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${statusColors[viewingAppointment.status]}`}>
                       {viewingAppointment.status}
                     </span>
                     <span className="text-slate-500 text-xs font-medium">{viewingAppointment.sessionType}</span>
@@ -359,7 +412,7 @@ export function Appointments() {
               </div>
               <button 
                 onClick={() => setViewingAppointment(null)}
-                className="p-2 bg-white/20 hover:bg-white/40 rounded-full transition-colors text-white"
+                className="p-2 bg-white/20 hover:bg-white/40 rounded-full transition-colors text-white absolute top-4 right-4"
               >
                 <X size={20} />
               </button>
@@ -369,15 +422,15 @@ export function Appointments() {
               <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="space-y-1">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mobile Contact</p>
-                  <p className="text-sm font-semibold text-slate-700">{viewingAppointment.details.phone}</p>
+                  <p className="text-sm font-semibold text-slate-700">{viewingAppointment.details?.phone || 'N/A'}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Address</p>
-                  <p className="text-sm font-semibold text-slate-700">{viewingAppointment.details.email}</p>
+                  <p className="text-sm font-semibold text-slate-700">{viewingAppointment.details?.email || 'N/A'}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Last Visit Date</p>
-                  <p className="text-sm font-semibold text-slate-700">{viewingAppointment.details.lastVisit}</p>
+                  <p className="text-sm font-semibold text-slate-700">{viewingAppointment.details?.lastVisit || 'N/A'}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Clinic Branch</p>
@@ -388,18 +441,19 @@ export function Appointments() {
               <div className="bg-slate-50 rounded-xl p-4 space-y-4">
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Clinical Condition</p>
-                  <p className="text-sm font-medium text-slate-700">{viewingAppointment.details.condition}</p>
+                  <p className="text-sm font-medium text-slate-700">{viewingAppointment.details?.condition || 'No specific condition noted.'}</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Next Steps / Notes</p>
-                  <p className="text-sm font-medium text-slate-700">{viewingAppointment.details.nextSteps}</p>
+                  <p className="text-sm font-medium text-slate-700">{viewingAppointment.details?.nextSteps || 'No follow-up notes available.'}</p>
                 </div>
               </div>
 
               <div className="mt-8 flex space-x-3">
                 <button 
                   onClick={() => {
-                    alert(`Edit flow for ${viewingAppointment.patientName}`);
+                    setEditingAppointment(viewingAppointment);
+                    setIsModalOpen(true);
                     setViewingAppointment(null);
                   }}
                   className="flex-1 bg-[#2e8b8b] hover:bg-[#236a6a] text-white font-bold py-3 rounded-xl transition-all shadow-md shadow-teal-100 flex items-center justify-center space-x-2"

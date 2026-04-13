@@ -1,7 +1,12 @@
-import { RECENT_PATIENTS } from '@/data/dashboard';
+import { useAppData } from '@/context/AppDataContext';
 
-export function RecentPatients() {
-  const patients = RECENT_PATIENTS;
+export function RecentPatients({ branch }: { branch: string }) {
+  const { patients: allPatients } = useAppData();
+
+  const patients = (branch === 'All Branches' 
+    ? allPatients 
+    : allPatients.filter(p => p.branch === branch)
+  ).slice(0, 5);
 
   return (
     <div className="bg-white rounded-xl border border-slate-100 shadow-sm flex-1">
