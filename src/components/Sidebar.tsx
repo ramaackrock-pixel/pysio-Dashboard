@@ -1,4 +1,5 @@
-import { LayoutDashboard, Users, Calendar, FileText, CreditCard, UserCircle, Building2, BarChart2, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, FileText, CreditCard, UserCircle, Building2, BarChart2, Settings, LogOut, BedDouble, UserPlus, Receipt, DoorOpen, History, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 interface SidebarProps {
@@ -19,6 +20,18 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     { name: 'Dashboard', icon: <LayoutDashboard size={18} />, href: '/dashboard' },
     { name: 'Patients', icon: <Users size={18} />, href: '/patients' },
     { name: 'Appointments', icon: <Calendar size={18} />, href: '/appointments' },
+    { 
+      name: 'Admitted Patients', 
+      icon: <BedDouble size={18} />, 
+      href: '/admissions',
+      subItems: [
+        { name: 'Admitted List', icon: <Users size={14} />, href: '/admissions?tab=list' },
+        { name: 'Add Admission', icon: <UserPlus size={14} />, href: '/admissions?tab=add' },
+        { name: 'Fees & Billing', icon: <Receipt size={14} />, href: '/admissions?tab=fees' },
+        { name: 'Room Availability', icon: <DoorOpen size={14} />, href: '/admissions?tab=rooms' },
+        { name: 'Past Admitted', icon: <History size={14} />, href: '/admissions?tab=past' },
+      ]
+    },
     { name: 'Medical Records', icon: <FileText size={18} />, href: '/records' },
     { name: 'Billing', icon: <CreditCard size={18} />, href: '/billing' },
     { name: 'Staff', icon: <UserCircle size={18} />, href: '/staff' },
@@ -26,6 +39,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     { name: 'Reports', icon: <BarChart2 size={18} />, href: '/reports' },
     { name: 'Settings', icon: <Settings size={18} />, href: '/settings' },
   ];
+
+  const [openSubMenus, setOpenSubMenus] = useState<Record<string, boolean>>({
+    'Admitted Patients': location.pathname.startsWith('/admissions')
+  });
+
+  const toggleSubMenu = (name: string) => {
+    setOpenSubMenus(prev => ({ ...prev, [name]: !prev[name] }));
+  };
 
   return (
     <>
@@ -49,6 +70,50 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       <div className="px-4 py-2 flex-grow overflow-y-auto space-y-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.href || (item.href !== '/' && location.pathname.startsWith(item.href));
+          const hasSubItems = 'subItems' in item && item.subItems;
+          const isSubMenuOpen = openSubMenus[item.name];
+
+          if (hasSubItems) {
+            return (
+              <div key={item.name} className="space-y-1">
+                <button
+                  onClick={() => toggleSubMenu(item.name)}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive && !isSubMenuOpen
+                    ? 'bg-[#5ab2b2] text-white shadow-sm'
+                    : 'text-slate-600 hover:bg-[#c2e2e2] hover:text-slate-900'
+                    }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </div>
+                  <ChevronDown size={14} className={`transition-transform duration-200 ${isSubMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {isSubMenuOpen && (
+                  <div className="ml-4 pl-4 border-l border-[#c2e2e2] space-y-1 animate-in slide-in-from-top-2 duration-200">
+                    {item.subItems.map((subItem) => {
+                      const isSubActive = location.pathname + location.search === subItem.href;
+                      return (
+                        <Link
+                          key={subItem.name}
+                          to={subItem.href}
+                          className={`w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-xs font-medium transition-colors ${isSubActive
+                            ? 'bg-[#5ab2b2]/10 text-[#2e8b8b] font-bold'
+                            : 'text-slate-500 hover:text-slate-800 hover:bg-[#c2e2e2]/50'
+                            }`}
+                        >
+                          {subItem.icon}
+                          <span>{subItem.name}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           return (
             <Link
               key={item.name}

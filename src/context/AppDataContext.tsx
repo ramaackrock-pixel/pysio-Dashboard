@@ -5,6 +5,7 @@ import { STAFF_MEMBERS as INITIAL_STAFF } from '@/data/staff';
 import { INITIAL_MEDICAL_RECORDS } from '@/data/medicalRecords';
 import { INITIAL_INVOICES } from '@/data/billing';
 import { CLINIC_BRANCHES as INITIAL_BRANCHES } from '@/data/branches';
+import { INITIAL_ADMITTED_PATIENTS, INITIAL_ROOMS } from '@/data/admission';
 
 import type { Patient } from '@/types/patient';
 import type { Appointment } from '@/types/appointment';
@@ -12,6 +13,7 @@ import type { StaffMember } from '@/types/staff';
 import type { MedicalRecord } from '@/types/medicalRecord';
 import type { Invoice } from '@/types/billing';
 import type { ClinicBranch } from '@/types/branches';
+import type { AdmittedPatient, Room } from '@/types/admission';
 
 interface AppDataContextType {
   patients: Patient[];
@@ -20,6 +22,8 @@ interface AppDataContextType {
   medicalRecords: MedicalRecord[];
   invoices: Invoice[];
   branches: ClinicBranch[];
+  admittedPatients: AdmittedPatient[];
+  rooms: Room[];
 
   addPatient: (patient: Patient) => void;
   updatePatient: (patient: Patient) => void;
@@ -44,6 +48,12 @@ interface AppDataContextType {
   addBranch: (branch: ClinicBranch) => void;
   updateBranch: (branch: ClinicBranch) => void;
   deleteBranch: (id: string) => void;
+
+  addAdmittedPatient: (patient: AdmittedPatient) => void;
+  updateAdmittedPatient: (patient: AdmittedPatient) => void;
+  deleteAdmittedPatient: (id: string) => void;
+
+  updateRoom: (room: Room) => void;
 }
 
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
@@ -79,6 +89,16 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return saved ? JSON.parse(saved) : INITIAL_BRANCHES;
   });
 
+  const [admittedPatients, setAdmittedPatients] = useState<AdmittedPatient[]>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('admittedPatients') : null;
+    return saved ? JSON.parse(saved) : INITIAL_ADMITTED_PATIENTS;
+  });
+
+  const [rooms, setRooms] = useState<Room[]>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('rooms') : null;
+    return saved ? JSON.parse(saved) : INITIAL_ROOMS;
+  });
+
   useEffect(() => {
     localStorage.setItem('patients', JSON.stringify(patients));
     localStorage.setItem('appointments', JSON.stringify(appointments));
@@ -86,7 +106,9 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem('medicalRecords', JSON.stringify(medicalRecords));
     localStorage.setItem('invoices', JSON.stringify(invoices));
     localStorage.setItem('branches', JSON.stringify(branches));
-  }, [patients, appointments, staff, medicalRecords, invoices, branches]);
+    localStorage.setItem('admittedPatients', JSON.stringify(admittedPatients));
+    localStorage.setItem('rooms', JSON.stringify(rooms));
+  }, [patients, appointments, staff, medicalRecords, invoices, branches, admittedPatients, rooms]);
 
   // Patients Actions
   const addPatient = (patient: Patient) => setPatients(prev => [patient, ...prev]);
@@ -118,6 +140,13 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const updateBranch = (branch: ClinicBranch) => setBranches(prev => prev.map(b => b.id === branch.id ? branch : b));
   const deleteBranch = (id: string) => setBranches(prev => prev.filter(b => b.id !== id));
 
+  // Admission Actions
+  const addAdmittedPatient = (patient: AdmittedPatient) => setAdmittedPatients(prev => [patient, ...prev]);
+  const updateAdmittedPatient = (patient: AdmittedPatient) => setAdmittedPatients(prev => prev.map(p => p.id === patient.id ? patient : p));
+  const deleteAdmittedPatient = (id: string) => setAdmittedPatients(prev => prev.filter(p => p.id !== id));
+
+  const updateRoom = (room: Room) => setRooms(prev => prev.map(r => r.id === room.id ? room : r));
+
   return (
     <AppDataContext.Provider value={{
       patients, appointments, staff, medicalRecords, invoices, branches,
@@ -126,7 +155,10 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ child
       addStaff, updateStaff, deleteStaff,
       addMedicalRecord, updateMedicalRecord, deleteMedicalRecord,
       addInvoice, updateInvoice, deleteInvoice,
-      addBranch, updateBranch, deleteBranch
+      addBranch, updateBranch, deleteBranch,
+      admittedPatients, rooms,
+      addAdmittedPatient, updateAdmittedPatient, deleteAdmittedPatient,
+      updateRoom
     }}>
       {children}
     </AppDataContext.Provider>

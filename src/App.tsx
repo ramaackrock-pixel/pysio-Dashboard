@@ -8,6 +8,7 @@ import { Billing } from '@/pages/Billing';
 import { Staff } from '@/pages/Staff';
 import { Branches } from '@/pages/Branches';
 import { Reports } from '@/pages/Reports';
+import { AdmittedPatients } from '@/pages/Admissions';
 import { NotFound } from '@/pages/NotFound';
 import Settings from '@/pages/Settings'
 
@@ -78,6 +79,14 @@ export default function App() {
           element={
             <PrivateRoute>
               <Branches />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admissions"
+          element={
+            <PrivateRoute>
+              <AdmittedPatients />
             </PrivateRoute>
           }
         />
