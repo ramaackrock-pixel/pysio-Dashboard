@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Save } from 'lucide-react';
-import { Patient } from '../../types/patient';
+import type { Patient } from '../../types/patient';
 
 interface EditPatientProps {
   patient: Patient | null;
