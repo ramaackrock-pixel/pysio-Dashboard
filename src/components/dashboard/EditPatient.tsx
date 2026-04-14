@@ -151,17 +151,17 @@ export default function EditPatient({ patient, isOpen, onClose, onSave }: EditPa
             </div>
           </div>
           
-          <div className="flex items-center justify-end space-x-4 pt-8 border-t border-slate-100">
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-8 border-t border-slate-100">
             <button 
               type="button" 
               onClick={onClose}
-              className="px-6 py-2.5 font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors text-sm"
+              className="w-full sm:w-auto px-6 py-2.5 font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors text-sm"
             >
               Cancel
             </button>
             <button 
               type="submit"
-              className="flex items-center space-x-2 px-6 py-2.5 font-bold text-white bg-[#5ab2b2] hover:bg-[#439c9c] rounded-xl transition-colors text-sm shadow-lg shadow-teal-500/20"
+              className="w-full sm:w-auto flex items-center justify-center space-x-2 px-6 py-2.5 font-bold text-white bg-[#5ab2b2] hover:bg-[#439c9c] rounded-xl transition-colors text-sm shadow-lg shadow-teal-500/20"
             >
               <Save size={18} />
               <span>{patient ? 'Save Changes' : 'Add Patient'}</span>

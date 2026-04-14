@@ -55,14 +55,14 @@ export function Staff() {
     <Layout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Staff</h1>
             <p className="text-slate-500 mt-1">Manage clinic staff and operations</p>
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
           >
             <UserPlus size={20} className="group-hover:rotate-12 transition-transform" />
             <span>Add Staff</span>
@@ -114,9 +114,9 @@ function StaffListView({ searchTerm: _searchTerm }: { searchTerm: string }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
       {/* Filters */}
-      <div className="p-6 border-b border-slate-50 bg-slate-50/30 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <div className="relative w-full md:w-80 group">
+      <div className="p-4 md:p-6 border-b border-slate-50 bg-slate-50/30 flex flex-col lg:flex-row gap-4 items-center justify-between">
+        <div className="flex flex-col md:flex-row items-center gap-4 w-full lg:w-auto">
+          <div className="relative w-full lg:w-80 group">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-500 transition-colors" />
             <input 
               type="text" 
@@ -126,24 +126,26 @@ function StaffListView({ searchTerm: _searchTerm }: { searchTerm: string }) {
               className="w-full pl-12 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
             />
           </div>
-          <div className="relative w-full md:w-44 group">
-            <select className="w-full appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none cursor-pointer pr-10">
-              <option>Branch: All</option>
-              <option>Downtown Clinic</option>
-              <option>North Wellness</option>
-            </select>
-            <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          </div>
-          <div className="relative w-full md:w-44 group">
-            <select className="w-full appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none cursor-pointer pr-10">
-              <option>Status: All</option>
-              <option>Active</option>
-              <option>Inactive</option>
-            </select>
-            <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+            <div className="relative w-full sm:w-44 group">
+              <select className="w-full appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none cursor-pointer pr-10">
+                <option>Branch: All</option>
+                <option>Downtown Clinic</option>
+                <option>North Wellness</option>
+              </select>
+              <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            </div>
+            <div className="relative w-full sm:w-44 group">
+              <select className="w-full appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none cursor-pointer pr-10">
+                <option>Status: All</option>
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+              <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            </div>
           </div>
         </div>
-        <button className="text-teal-600 text-[10px] font-bold uppercase tracking-widest hover:text-teal-700 font-bold flex items-center space-x-2">
+        <button className="text-teal-600 text-[10px] font-bold uppercase tracking-widest hover:text-teal-700 font-bold flex items-center space-x-2 mt-2 lg:mt-0">
           <Filter size={14} />
           <span>Clear Filters</span>
         </button>
@@ -239,15 +241,15 @@ function AttendanceView() {
   return (
     <div className="space-y-6">
       {/* Attendance Filters */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center space-x-4 w-full md:w-auto">
-          <div className="relative w-full md:w-56 group">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+          <div className="relative w-full sm:w-56 group">
             <Calendar size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <div className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700">
               10/27/2023
             </div>
           </div>
-          <div className="relative w-full md:w-64 group">
+          <div className="relative w-full sm:w-64 group">
             <div className="relative">
               <Briefcase size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <select className="w-full appearance-none bg-white border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 text-sm font-bold text-slate-700 focus:outline-none cursor-pointer">
@@ -257,10 +259,10 @@ function AttendanceView() {
             </div>
           </div>
         </div>
-        <div className="flex items-center space-x-3 w-full md:w-auto">
+        <div className="flex items-center justify-center sm:justify-end space-x-3 w-full lg:w-auto">
           <button className="flex items-center space-x-2 text-slate-600 hover:text-teal-600 text-xs font-bold uppercase tracking-widest px-4">
             <Activity size={16} />
-            <span>More Filters</span>
+            <span className="hidden sm:inline">More Filters</span>
           </button>
           <button className="flex items-center space-x-2 text-slate-600 hover:text-teal-600 text-xs font-bold uppercase tracking-widest bg-white px-4 py-2.5 rounded-xl border border-slate-100 shadow-sm">
             <Download size={16} />
@@ -384,8 +386,8 @@ function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-      <div className="p-6 border-b border-slate-50 bg-slate-50/10 flex flex-col md:flex-row gap-4 items-center">
-        <div className="relative w-full md:w-80 group">
+      <div className="p-4 md:p-6 border-b border-slate-50 bg-slate-50/10 flex flex-col lg:flex-row gap-4 items-center">
+        <div className="relative w-full lg:w-80 group">
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
           <input 
             type="text" 
@@ -393,18 +395,18 @@ function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
             className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/10 focus:border-teal-500 transition-all"
           />
         </div>
-        <div className="relative w-full md:w-56 group">
+        <div className="relative w-full sm:w-56 group">
           <Calendar size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
           <select className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-10 py-2.5 text-sm font-bold text-slate-700 focus:outline-none cursor-pointer">
             <option>Oct 23 - Oct 29, 2023</option>
           </select>
           <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
         </div>
-        <div className="flex-grow md:flex md:justify-end gap-3 w-full">
+        <div className="flex-grow flex items-center justify-between sm:justify-end gap-3 w-full">
           <button className="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:text-teal-600 transition-all">
             <Filter size={18} />
           </button>
-          <button className="flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 text-slate-700 px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold transition-all group">
+          <button className="flex items-center justify-center space-x-2 bg-slate-50 hover:bg-slate-100 text-slate-700 px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold transition-all group flex-1 sm:flex-none">
             <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
             <span>Export List</span>
           </button>
@@ -491,9 +493,9 @@ function PayrollView({ searchTerm: _searchTerm }: { searchTerm: string }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
       {/* Header Filters */}
-      <div className="p-6 border-b border-slate-50 bg-slate-50/10 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
-          <div className="relative w-full md:w-44 group">
+      <div className="p-4 md:p-6 border-b border-slate-50 bg-slate-50/10 flex flex-col lg:flex-row gap-4 items-center justify-between">
+        <div className="flex flex-col md:flex-row items-center gap-3 w-full lg:w-auto">
+          <div className="relative w-full sm:w-44 group">
             <select 
               className="w-full appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none cursor-pointer pr-10"
               value={currentMonth}
@@ -504,7 +506,7 @@ function PayrollView({ searchTerm: _searchTerm }: { searchTerm: string }) {
             </select>
             <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
           </div>
-          <div className="relative w-full md:w-64 group">
+          <div className="relative w-full lg:w-64 group">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input 
               type="text" 
@@ -513,7 +515,7 @@ function PayrollView({ searchTerm: _searchTerm }: { searchTerm: string }) {
             />
           </div>
         </div>
-        <button className="flex items-center space-x-2 bg-teal-50/50 hover:bg-teal-50 text-teal-700 px-6 py-2.5 rounded-xl border border-teal-100 text-xs font-bold transition-all">
+        <button className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-teal-50/50 hover:bg-teal-50 text-teal-700 px-6 py-2.5 rounded-xl border border-teal-100 text-xs font-bold transition-all">
           <Receipt size={16} />
           <span>Generate Payroll</span>
         </button>

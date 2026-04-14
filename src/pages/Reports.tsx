@@ -39,20 +39,22 @@ export function Reports() {
     <Layout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Analytics & Reports</h1>
             <p className="text-slate-500 mt-1">Institutional performance and clinical insights</p>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="relative group">
-              <button className="flex items-center space-x-2 bg-white border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:border-teal-500 transition-all shadow-sm">
-                <Calendar size={18} className="text-teal-500" />
-                <span>{timeRange}</span>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            <div className="relative group w-full sm:w-auto">
+              <button className="w-full flex items-center justify-between sm:justify-start space-x-2 bg-white border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:border-teal-500 transition-all shadow-sm">
+                <div className="flex items-center space-x-2">
+                  <Calendar size={18} className="text-teal-500" />
+                  <span>{timeRange}</span>
+                </div>
                 <ChevronDown size={16} />
               </button>
             </div>
-            <button className="flex items-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group">
+            <button className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group">
               <Download size={18} className="group-hover:-translate-y-1 transition-transform" />
               <span>Export Report</span>
             </button>
@@ -60,7 +62,7 @@ export function Reports() {
         </div>
 
         {/* Operational Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {KEY_OPERATIONAL_METRICS.map((metric, idx) => (
             <div key={idx} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
               <div className="flex justify-between items-start mb-4">
@@ -227,12 +229,12 @@ export function Reports() {
                   </div>
                 ))}
               </div>
-              <div className="mt-8 pt-6 border-t border-slate-700 flex justify-between items-center">
-                <div>
+              <div className="mt-8 pt-6 border-t border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="text-center sm:text-left">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Top Performer</p>
                   <p className="text-sm font-black text-white">Downtown Clinic</p>
                 </div>
-                <button className="px-4 py-2 bg-teal-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-teal-400 transition-colors">
+                <button className="w-full sm:w-auto px-4 py-2 bg-teal-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-teal-400 transition-colors">
                   View Facility details
                 </button>
               </div>

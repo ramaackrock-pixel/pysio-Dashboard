@@ -1,7 +1,12 @@
 import { LayoutDashboard, Users, Calendar, FileText, CreditCard, UserCircle, Building2, BarChart2, Settings, LogOut } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,7 +28,19 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-[#d8f0f0] min-h-screen flex flex-col border-r border-[#c2e2e2]">
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-[#d8f0f0] flex flex-col border-r border-[#c2e2e2] transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
       <div className="p-6">
         <h1 className="text-2xl font-bold text-slate-800">Physio</h1>
         <p className="text-[10px] font-semibold text-slate-500 tracking-widest mt-1 uppercase">Health Enterprise</p>
@@ -68,6 +85,7 @@ export function Sidebar() {
           </button>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

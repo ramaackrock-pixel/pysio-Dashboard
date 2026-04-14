@@ -101,7 +101,7 @@ export function Appointments() {
 
   return (
     <Layout>
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">Appointments</h1>
           <p className="text-sm font-medium text-slate-600 mt-1">
@@ -110,7 +110,7 @@ export function Appointments() {
         </div>
         <button 
           onClick={() => { setEditingAppointment(null); setIsModalOpen(true); }}
-          className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
+          className="w-full sm:w-auto bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center justify-center space-x-2"
         >
           <span className="text-lg leading-none">+</span>
           <span>Book Appointment</span>
@@ -119,7 +119,7 @@ export function Appointments() {
 
       {/* Filters Section */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
           <div>
             <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Date Picker</label>
             <div className="relative">
@@ -132,7 +132,7 @@ export function Appointments() {
 
           <div>
             <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Branch</label>
-            <div className="relative">
+            <div className="relative px-0">
               <select 
                 value={branchFilter}
                 onChange={(e) => { setBranchFilter(e.target.value); setCurrentPage(1); }}
@@ -149,7 +149,7 @@ export function Appointments() {
 
           <div>
             <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Therapist</label>
-            <div className="relative">
+            <div className="relative px-0">
               <select 
                 value={therapistFilter}
                 onChange={(e) => { setTherapistFilter(e.target.value); setCurrentPage(1); }}
@@ -167,7 +167,7 @@ export function Appointments() {
 
           <div>
             <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Status</label>
-            <div className="relative">
+            <div className="relative px-0">
               <select 
                 value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
@@ -333,7 +333,7 @@ export function Appointments() {
       </div>
 
       {/* Stats Cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm flex items-center space-x-4">
           <div className="p-3 bg-emerald-50 rounded-lg">
             <CheckCircle2 size={24} className="text-emerald-500" />
@@ -394,7 +394,7 @@ export function Appointments() {
       {/* View Detail Modal */}
       {viewingAppointment && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200" onClick={() => setViewingAppointment(null)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in slide-in-from-bottom-4 duration-300" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-in slide-in-from-bottom-4 duration-300" onClick={e => e.stopPropagation()}>
             <div className={`h-24 ${viewingAppointment.initialsBg} flex items-end justify-between px-8 pb-4 relative`}>
               <div className="flex items-center space-x-4 translate-y-8">
                 <div className={`w-20 h-20 rounded-2xl border-4 border-white shadow-md flex items-center justify-center text-2xl font-bold ${viewingAppointment.initialsBg}`}>

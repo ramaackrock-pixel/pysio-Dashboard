@@ -29,16 +29,16 @@ export function Dashboard() {
 
   return (
     <Layout>
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
           <p className="text-sm text-slate-500 mt-1">
-            Welcome back, here is what's happening today across your clinic network.
+            Welcome back, here is what's happening today.
           </p>
         </div>
 
-        <div className="flex space-x-4 items-center">
-          <div className="flex bg-slate-100 rounded-lg p-1 space-x-1">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <div className="flex bg-slate-100 rounded-lg p-1 space-x-1 shrink-0 overflow-x-auto no-scrollbar">
             {['Daily', 'Weekly', 'Monthly'].map((range) => (
               <button
                 key={range}
@@ -53,7 +53,7 @@ export function Dashboard() {
             ))}
           </div>
 
-          <div className="relative">
+          <div className="relative shrink-0">
             <select
               value={selectedBranch}
               onChange={(e) => setSelectedBranch(e.target.value)}
@@ -71,9 +71,9 @@ export function Dashboard() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-[#439c9c] hover:bg-[#b52b2] text-white text-sm font-bold py-3 px-8 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
+            className="w-full sm:w-auto bg-[#439c9c] hover:bg-[#b52b2] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center justify-center space-x-2"
           >
-            <span className="text-alg leading-none">+</span>
+            <span className="text-lg leading-none">+</span>
             <span>NEW APPOINTMENT</span>
           </button>
         </div>

@@ -94,7 +94,7 @@ export function MedicalRecords() {
 
   return (
     <Layout>
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">Medical Records</h1>
           <p className="text-sm font-medium text-slate-600 mt-1">
@@ -103,7 +103,7 @@ export function MedicalRecords() {
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
+          className="w-full sm:w-auto bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center justify-center space-x-2"
         >
           <Plus size={18} />
           <span>Add Record</span>
@@ -112,8 +112,8 @@ export function MedicalRecords() {
 
       {/* Filters Section */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
-          <div className="md:col-span-2 relative">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+          <div className="sm:col-span-2 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text"
@@ -366,16 +366,16 @@ export function MedicalRecords() {
                 </div>
               </div>
 
-              <div className="flex space-x-3">
+              <div className="flex flex-col-reverse sm:flex-row gap-3">
                 <button 
                   onClick={() => setViewingRecord(null)}
-                  className="flex-1 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold py-3 rounded-xl transition-colors"
+                  className="w-full sm:flex-1 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold py-3 rounded-xl transition-colors"
                 >
                   Close
                 </button>
                 <button 
                   onClick={() => handleDelete(viewingRecord.id)}
-                  className="px-6 bg-red-50 text-red-600 hover:bg-red-100 font-bold py-3 rounded-xl transition-colors flex items-center justify-center space-x-2"
+                  className="w-full sm:px-6 bg-red-50 text-red-600 hover:bg-red-100 font-bold py-3 rounded-xl transition-colors flex items-center justify-center space-x-2"
                 >
                   <Trash2 size={18} />
                   <span>Delete Record</span>

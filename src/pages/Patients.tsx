@@ -85,7 +85,7 @@ export function Patients() {
 
   return (
     <Layout>
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">Patients</h1>
           <p className="text-sm font-medium text-slate-600 mt-1">
@@ -94,15 +94,15 @@ export function Patients() {
         </div>
         <button 
           onClick={() => { setEditingPatient(null); setIsAddModalOpen(true); }}
-          className="bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center space-x-2"
+          className="w-full sm:w-auto bg-[#5ab2b2] hover:bg-[#439c9c] text-white text-sm font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm flex items-center justify-center space-x-2"
         >
           <span className="text-lg leading-none">+</span>
           <span>New Patient</span>
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 mb-6 flex flex-wrap items-end gap-6">
-        <div className="flex-1 min-w-[200px]">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
+        <div className="w-full">
           <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Branch Location</label>
           <div className="relative">
             <select 
@@ -118,7 +118,7 @@ export function Patients() {
           </div>
         </div>
 
-        <div className="flex-1 min-w-[200px]">
+        <div className="w-full">
           <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Patient Status</label>
           <div className="relative">
             <select 
@@ -136,7 +136,7 @@ export function Patients() {
           </div>
         </div>
 
-        <div className="flex-1 min-w-[200px]">
+        <div className="w-full">
           <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Last Visit Date</label>
           <input 
             type="text" 
@@ -149,7 +149,7 @@ export function Patients() {
 
         <button 
           onClick={handleClearFilters}
-          className="flex items-center space-x-2 px-4 py-2.5 text-[#1e85b4] font-bold text-sm hover:bg-slate-50 rounded-lg transition-colors"
+          className="flex items-center justify-center space-x-2 px-4 py-2.5 text-[#1e85b4] font-bold text-sm hover:bg-slate-50 rounded-lg transition-colors w-full sm:w-auto"
         >
           <FilterX size={16} />
           <span>Clear Filters</span>
@@ -260,7 +260,7 @@ export function Patients() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-[#f0f9f9] border border-teal-100 rounded-xl p-6 shadow-sm flex flex-col justify-between">
           <div className="mb-4">
             <UserPlus size={24} className="text-[#138db5] mb-2" />

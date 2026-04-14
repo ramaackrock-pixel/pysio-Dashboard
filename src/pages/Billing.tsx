@@ -106,14 +106,14 @@ export function Billing() {
     <Layout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-800">Billing</h1>
             <p className="text-slate-500 mt-1">Manage invoices and payments</p>
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
           >
             <UserPlus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
             <span>Create Invoice</span>
@@ -127,7 +127,7 @@ export function Billing() {
         />
 
         {/* Stats Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {stats.map((stat, i) => (
             <div
               key={i}
@@ -160,8 +160,8 @@ export function Billing() {
         {/* Filters and Table Container */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
           {/* Filter Bar */}
-          <div className="p-6 border-b border-slate-50 flex flex-col xl:flex-row gap-4 items-center justify-between bg-slate-50/30">
-            <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
+          <div className="p-4 md:p-6 border-b border-slate-50 flex flex-col xl:flex-row gap-4 items-center justify-between bg-slate-50/30">
+            <div className="flex flex-col lg:flex-row items-center gap-4 w-full xl:w-auto">
               <div className="relative w-full md:w-80 group">
                 <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#5ab2b2] transition-colors" />
                 <input
@@ -173,7 +173,7 @@ export function Billing() {
                 />
               </div>
 
-              <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                 <div className="relative w-full md:w-40 group">
                   <select
                     className="w-full appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-[#5ab2b2] pr-10 cursor-pointer transition-all"
@@ -343,8 +343,8 @@ export function Billing() {
           </div>
 
           {/* Footer / Pagination */}
-          <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-50 flex items-center justify-between">
-            <p className="text-xs font-bold text-slate-400">
+          <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-50 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs font-bold text-slate-400 text-center sm:text-left">
               Showing {filteredInvoices.length} to {filteredInvoices.length} of {filteredInvoices.length + 37} entries
             </p>
             <div className="flex items-center space-x-2">

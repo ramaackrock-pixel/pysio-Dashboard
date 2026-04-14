@@ -14,8 +14,8 @@ export default function Settings() {
 
             <div className="space-y-4">
                 {/* Clinic Details */}
-                <div className="flex items-center justify-between p-6 bg-white border border-slate-100 rounded-xl shadow-sm">
-                    <div className="flex items-center space-x-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between p-6 bg-white border border-slate-100 rounded-xl shadow-sm gap-6 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
                         <div className="p-4 bg-[#eef7f7] text-[#5ab2b2] rounded-xl flex-shrink-0">
                             <Building size={28} strokeWidth={2.5} />
                         </div>
@@ -26,15 +26,15 @@ export default function Settings() {
                     </div>
                     <button 
                         onClick={() => setActiveSection('clinic')}
-                        className="px-6 py-2.5 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold text-sm rounded-lg transition-colors"
+                        className="w-full sm:w-auto px-6 py-2.5 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold text-sm rounded-lg transition-colors"
                     >
                         Manage
                     </button>
                 </div>
 
                 {/* User Roles & Permissions */}
-                <div className="flex items-center justify-between p-6 bg-white border border-slate-100 rounded-xl shadow-sm">
-                    <div className="flex items-center space-x-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between p-6 bg-white border border-slate-100 rounded-xl shadow-sm gap-6 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
                         <div className="p-4 bg-[#eef7f7] text-[#5ab2b2] rounded-xl flex-shrink-0">
                             <Shield size={28} strokeWidth={2.5} />
                         </div>
@@ -45,15 +45,15 @@ export default function Settings() {
                     </div>
                     <button 
                         onClick={() => setActiveSection('roles')}
-                        className="px-6 py-2.5 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold text-sm rounded-lg transition-colors"
+                        className="w-full sm:w-auto px-6 py-2.5 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold text-sm rounded-lg transition-colors"
                     >
                         Manage
                     </button>
                 </div>
 
                 {/* Notifications */}
-                <div className="flex items-center justify-between p-6 bg-white border border-slate-100 rounded-xl shadow-sm">
-                    <div className="flex items-center space-x-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between p-6 bg-white border border-slate-100 rounded-xl shadow-sm gap-6 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
                         <div className="p-4 bg-[#eef7f7] text-[#5ab2b2] rounded-xl flex-shrink-0">
                             <Bell size={28} strokeWidth={2.5} />
                         </div>
@@ -64,15 +64,15 @@ export default function Settings() {
                     </div>
                     <button 
                         onClick={() => setActiveSection('notifications')}
-                        className="px-6 py-2.5 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold text-sm rounded-lg transition-colors"
+                        className="w-full sm:w-auto px-6 py-2.5 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold text-sm rounded-lg transition-colors"
                     >
                         Manage
                     </button>
                 </div>
 
                 {/* Security Settings */}
-                <div className="flex items-center justify-between p-6 bg-white border border-slate-100 rounded-xl shadow-sm">
-                    <div className="flex items-center space-x-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between p-6 bg-white border border-slate-100 rounded-xl shadow-sm gap-6 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
                         <div className="p-4 bg-[#eef7f7] text-[#5ab2b2] rounded-xl flex-shrink-0">
                             <ShieldCheck size={28} strokeWidth={2.5} />
                         </div>
@@ -83,7 +83,7 @@ export default function Settings() {
                     </div>
                     <button 
                         onClick={() => setActiveSection('security')}
-                        className="px-6 py-2.5 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold text-sm rounded-lg transition-colors"
+                        className="w-full sm:w-auto px-6 py-2.5 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold text-sm rounded-lg transition-colors"
                     >
                         Manage
                     </button>
@@ -225,10 +225,10 @@ export default function Settings() {
                             </>
                         )}
                         
-                        <div className="pt-6 border-t border-slate-100 flex justify-end space-x-4 mt-8">
+                        <div className="pt-6 border-t border-slate-100 flex flex-col-reverse sm:flex-row justify-end gap-4 mt-8">
                             <button 
                                 onClick={() => setActiveSection(null)} 
-                                className="px-6 py-3 border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors"
+                                className="w-full sm:w-auto px-6 py-3 border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors"
                             >
                                 Cancel
                             </button>
@@ -237,7 +237,7 @@ export default function Settings() {
                                     alert('Settings saved successfully!');
                                     setActiveSection(null);
                                 }} 
-                                className="flex items-center space-x-2 px-6 py-3 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold rounded-xl transition-colors shadow-md shadow-teal-100"
+                                className="w-full sm:w-auto flex items-center justify-center space-x-2 px-6 py-3 bg-[#5ab2b2] hover:bg-[#439c9c] text-white font-bold rounded-xl transition-colors shadow-md shadow-teal-100"
                             >
                                 <Save size={20} />
                                 <span>Save Changes</span>

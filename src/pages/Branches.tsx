@@ -59,14 +59,14 @@ export function Branches() {
     <Layout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Branches</h1>
             <p className="text-slate-500 mt-1">Manage your clinic network and facility performance</p>
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
           >
             <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
             <span>Add New Branch</span>
@@ -80,8 +80,8 @@ export function Branches() {
         />
 
         {/* Toolbar */}
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-          <div className="relative w-full md:w-96 group">
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="relative w-full sm:w-96 group">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-500 transition-colors" />
             <input 
               type="text" 
@@ -92,16 +92,16 @@ export function Branches() {
             />
           </div>
           
-          <div className="flex items-center bg-slate-50 p-1 rounded-xl border border-slate-100">
+          <div className="flex items-center justify-center bg-slate-50 p-1 rounded-xl border border-slate-100 w-full sm:w-auto">
             <button 
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`flex-1 sm:flex-none p-2 rounded-lg transition-all flex items-center justify-center ${viewMode === 'grid' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             >
               <LayoutGrid size={18} />
             </button>
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`flex-1 sm:flex-none p-2 rounded-lg transition-all flex items-center justify-center ${viewMode === 'list' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             >
               <ListIcon size={18} />
             </button>
