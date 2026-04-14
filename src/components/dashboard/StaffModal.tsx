@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, User, Mail, Phone, Briefcase, Building2 } from 'lucide-react';
-import { useAppData } from '@/context/AppDataContext';
+
 
 interface StaffModalProps {
   isOpen: boolean;

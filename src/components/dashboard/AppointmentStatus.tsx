@@ -1,7 +1,7 @@
 
 import { useAppData } from '@/context/AppDataContext';
 
-export function AppointmentStatus({ branch, range }: { branch: string, range: string }) {
+export function AppointmentStatus({ branch }: { branch: string }) {
   const { appointments: allAppointments } = useAppData();
 
   const appointments = branch === 'All Branches' ? allAppointments : allAppointments.filter(a => a.branch === branch);

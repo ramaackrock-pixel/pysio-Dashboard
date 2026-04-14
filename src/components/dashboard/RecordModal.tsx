@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, FileText, User, Calendar } from 'lucide-react';
+import { X, Save, FileText, User } from 'lucide-react';
 import { useAppData } from '@/context/AppDataContext';
-import type { MedicalRecord, MedicalRecordType } from '@/types/medicalRecord';
+import type { MedicalRecordType } from '@/types/medicalRecord';
 
 interface RecordModalProps {
   isOpen: boolean;

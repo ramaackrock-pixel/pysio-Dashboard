@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Calendar, Clock, User, Building2, ClipboardList } from 'lucide-react';
+import { X, Save, Clock, User, Building2 } from 'lucide-react';
 import { useAppData } from '@/context/AppDataContext';
 import type { Appointment } from '@/types/appointment';
 

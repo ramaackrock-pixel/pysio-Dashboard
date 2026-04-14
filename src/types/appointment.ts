@@ -11,6 +11,7 @@ export interface Appointment {
   time: string;
   duration: string;
   patientName: string;
+  pid?: string;
   initials: string;
   initialsBg: string;
   therapist: string;

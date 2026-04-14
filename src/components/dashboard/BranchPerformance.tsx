@@ -14,7 +14,7 @@ export function BranchPerformance() {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {branches.map((branch, i) => (
+        {branches.map((branch) => (
           <div 
             key={branch.id} 
             className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#5ab2b2]/20 cursor-pointer"

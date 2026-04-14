@@ -3,6 +3,7 @@ export interface Patient {
   name: string;
   demographics: string;
   id: string;
+  pid?: string;
   branch: string;
   contact: string;
   lastVisit: string;

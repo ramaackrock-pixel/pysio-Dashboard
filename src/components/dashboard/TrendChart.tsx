@@ -10,7 +10,7 @@ const data = [
   { name: 'SUN', revenue: 0, visits: 0 },
 ];
 
-export function TrendChart({ branch, range }: { branch: string, range: string }) {
+export function TrendChart() {
   return (
     <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm col-span-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#5ab2b2]/20 cursor-pointer group">
       <div className="flex justify-between items-start mb-6">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, User, CreditCard, Building2, Calendar } from 'lucide-react';
+import { X, Save, User, CreditCard, Building2 } from 'lucide-react';
 import { useAppData } from '@/context/AppDataContext';
 import type { InvoiceStatus } from '@/types/billing';
 

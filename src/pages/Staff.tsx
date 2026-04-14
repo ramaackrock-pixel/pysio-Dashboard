@@ -26,7 +26,6 @@ import StaffModal from '@/components/dashboard/StaffModal';
 import { useSearch } from '@/context/SearchContext';
 
 export function Staff() {
-  const { searchQuery } = useSearch();
   const { addStaff } = useAppData();
   const [activeTab, setActiveTab] = useState<StaffTab>('List');
   const [searchTerm, setSearchTerm] = useState('');
@@ -100,7 +99,7 @@ export function Staff() {
   );
 }
 
-function StaffListView({ searchTerm: passedSearch }: { searchTerm: string }) {
+function StaffListView({ searchTerm: _searchTerm }: { searchTerm: string }) {
   const { searchQuery } = useSearch();
   const { staff: allStaff } = useAppData();
   const [localSearch, setLocalSearch] = useState('');
@@ -373,7 +372,7 @@ function AttendanceView() {
   );
 }
 
-function SchedulesView({ }: { searchTerm: string }) {
+function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
   const getShiftBadge = (shift: ShiftType) => {
     switch (shift) {
       case 'Morning': return 'bg-teal-50 text-teal-600';
@@ -486,7 +485,7 @@ function SchedulesView({ }: { searchTerm: string }) {
   );
 }
 
-function PayrollView({ }: { searchTerm: string }) {
+function PayrollView({ searchTerm: _searchTerm }: { searchTerm: string }) {
   const [currentMonth, setCurrentMonth] = useState('October 2023');
 
   return (

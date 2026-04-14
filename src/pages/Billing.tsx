@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Layout } from '../components/Layout';
 import {
-  Plus,
   Search,
   ChevronDown,
   Calendar,
@@ -21,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useAppData } from '@/context/AppDataContext';
 import { BILLING_STATS } from '../data/billing';
-import type { Invoice, InvoiceStatus } from '../types/billing';
+import type { InvoiceStatus } from '../types/billing';
 import InvoiceModal from '@/components/dashboard/InvoiceModal';
 import { useSearch } from '@/context/SearchContext';
 

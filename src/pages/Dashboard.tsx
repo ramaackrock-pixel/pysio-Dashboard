@@ -85,15 +85,15 @@ export function Dashboard() {
         onSave={handleSaveAppointment}
       />
 
-      <StatCards branch={selectedBranch} range={timeRange} />
+      <StatCards branch={selectedBranch} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
-          <TrendChart branch={selectedBranch} range={timeRange} />
+          <TrendChart />
         </div>
         <div className="col-span-1 space-y-6">
-          <AppointmentStatus branch={selectedBranch} range={timeRange} />
-          <CollectionStatus branch={selectedBranch} range={timeRange} />
+          <AppointmentStatus branch={selectedBranch} />
+          <CollectionStatus />
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 
 import { useAppData } from '@/context/AppDataContext';
 
-export function CollectionStatus({ branch, range }: { branch: string, range: string }) {
+export function CollectionStatus() {
   const { invoices } = useAppData();
 
   const totalCollected = invoices.reduce((acc, inv) => acc + inv.paidAmount, 0);

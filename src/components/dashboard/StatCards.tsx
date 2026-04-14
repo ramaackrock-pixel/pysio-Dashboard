@@ -1,18 +1,13 @@
 import { Users, Calendar, Banknote, ClipboardClock, BriefcaseMedical } from 'lucide-react';
 import { useAppData } from '@/context/AppDataContext';
 
-export function StatCards({ branch, range }: { branch: string, range: string }) {
+export function StatCards({ branch }: { branch: string }) {
   const { patients: allPatients, appointments: allAppointments, staff: allStaff, invoices: allInvoices } = useAppData();
 
   const patients = branch === 'All Branches' ? allPatients : allPatients.filter(p => p.branch === branch);
   const appointments = branch === 'All Branches' ? allAppointments : allAppointments.filter(a => a.branch === branch);
   const staff = branch === 'All Branches' ? allStaff : allStaff.filter(s => s.branch === branch);
-  const invoices = branch === 'All Branches' ? allInvoices : allInvoices.filter(i => {
-    // Note: Invoice doesn't have a branch field in the mock, 
-    // but we can derive it from the patient associated with the invoice if needed.
-    // For now we'll just show all invoices or implement a basic check.
-    return true; 
-  });
+  const invoices = branch === 'All Branches' ? allInvoices : allInvoices;
 
   const activeInvoicesCount = invoices.filter(i => i.status !== 'PAID').length;
   const totalRevenue = invoices.reduce((acc, inv) => acc + inv.paidAmount, 0);
@@ -78,9 +73,9 @@ export function StatCards({ branch, range }: { branch: string, range: string }) 
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-      {stats.map((stat, i) => (
+      {stats.map((stat) => (
         <div 
-          key={i} 
+          key={stat.title} 
           className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#5ab2b2]/20 cursor-pointer group"
         >
           <div className="flex justify-between items-start mb-4">

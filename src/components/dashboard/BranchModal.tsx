@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, MapPin, User, Phone, Image } from 'lucide-react';
-import { useAppData } from '@/context/AppDataContext';
 import type { BranchStatus } from '@/types/branches';
 
 interface BranchModalProps {
