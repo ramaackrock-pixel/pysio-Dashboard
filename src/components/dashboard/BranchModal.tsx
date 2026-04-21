@@ -132,8 +132,8 @@ export default function BranchModal({ isOpen, onClose, onSave }: BranchModalProp
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Header Image URL</label>
                 <div className="relative">
-                   <Image size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                   <input
+                  <Image size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
                     type="text"
                     name="image"
                     value={formData.image}
