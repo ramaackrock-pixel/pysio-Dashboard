@@ -23,7 +23,7 @@ import type { AdmittedPatient, Room } from '@/types/admission';
 
 export function AdmittedPatients() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { admittedPatients, patients, rooms, staff, addAdmittedPatient, updateAdmittedPatient, updateRoom } = useAppData();
+  const { admittedPatients, patients, rooms, staff, addAdmittedPatient } = useAppData();
   const activeTab = searchParams.get('tab') || 'list';
 
   const setTab = (tab: string) => {
