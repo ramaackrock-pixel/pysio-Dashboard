@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Layout } from '../components/Layout';
-import { 
-  UserPlus, 
-  Search, 
-  ChevronDown, 
-  MoreVertical, 
+import {
+  UserPlus,
+  Search,
+  ChevronDown,
+  MoreVertical,
   Calendar,
   Clock,
   Briefcase,
@@ -16,14 +16,15 @@ import {
   Receipt
 } from 'lucide-react';
 import { useAppData } from '@/context/AppDataContext';
-import { 
-  ATTENDANCE_RECORDS, 
-  STAFF_SCHEDULES, 
-  PAYROLL_RECORDS 
+import {
+  ATTENDANCE_RECORDS,
+  STAFF_SCHEDULES,
+  PAYROLL_RECORDS
 } from '../data/staff';
 import type { StaffTab, AttendanceStatus, ShiftType } from '../types/staff';
 import StaffModal from '@/components/dashboard/StaffModal';
 import { useSearch } from '@/context/SearchContext';
+import { apiService } from '@/services/apiService';
 
 export function Staff() {
   const { addStaff } = useAppData();
@@ -32,21 +33,17 @@ export function Staff() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSaveStaff = (data: any) => {
-    const newStaff = {
-      ...data,
-      id: `STF-${Math.floor(Math.random() * 10000)}`,
-      department: data.role === 'Admin / Receptionist' ? 'Administration' : 'Physiotherapy'
-    };
+    const newStaff = apiService.prepareStaff(data);
     addStaff(newStaff);
     setIsModalOpen(false);
   };
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'List': return <StaffListView searchTerm={searchTerm} />;
+      case 'List': return <StaffListView />;
       case 'Attendance': return <AttendanceView />;
-      case 'Schedules': return <SchedulesView searchTerm={searchTerm} />;
-      case 'Payroll': return <PayrollView searchTerm={searchTerm} />;
+      case 'Schedules': return <SchedulesView />;
+      case 'Payroll': return <PayrollView />;
       default: return null;
     }
   };
@@ -60,7 +57,7 @@ export function Staff() {
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Staff</h1>
             <p className="text-slate-500 mt-1">Manage clinic staff and operations</p>
           </div>
-          <button 
+          <button
             onClick={() => setIsModalOpen(true)}
             className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#5ab2b2] hover:bg-[#4a9f9f] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95 group"
           >
@@ -69,7 +66,7 @@ export function Staff() {
           </button>
         </div>
 
-        <StaffModal 
+        <StaffModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSaveStaff}
@@ -81,11 +78,10 @@ export function Staff() {
             <button
               key={tab}
               onClick={() => { setActiveTab(tab); setSearchTerm(''); }}
-              className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                activeTab === tab 
-                  ? 'bg-white text-teal-600 shadow-sm border border-slate-200/50' 
+              className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === tab
+                  ? 'bg-white text-teal-600 shadow-sm border border-slate-200/50'
                   : 'text-slate-500 hover:text-slate-800'
-              }`}
+                }`}
             >
               Staff {tab === 'List' ? 'List' : tab}
             </button>
@@ -99,16 +95,16 @@ export function Staff() {
   );
 }
 
-function StaffListView({ searchTerm: _searchTerm }: { searchTerm: string }) {
+function StaffListView() {
   const { searchQuery } = useSearch();
   const { staff: allStaff } = useAppData();
   const [localSearch, setLocalSearch] = useState('');
-  
+
   const staff = allStaff.filter(s => {
     const activeSearch = localSearch || searchQuery;
     return s.name.toLowerCase().includes(activeSearch.toLowerCase()) ||
-    s.email.toLowerCase().includes(activeSearch.toLowerCase()) ||
-    s.id.toLowerCase().includes(activeSearch.toLowerCase());
+      s.email.toLowerCase().includes(activeSearch.toLowerCase()) ||
+      s.id.toLowerCase().includes(activeSearch.toLowerCase());
   });
 
   return (
@@ -118,9 +114,9 @@ function StaffListView({ searchTerm: _searchTerm }: { searchTerm: string }) {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full lg:w-auto">
           <div className="relative w-full lg:w-80 group">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-500 transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Search by name, email or ID..." 
+            <input
+              type="text"
+              placeholder="Search by name, email or ID..."
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
               className="w-full pl-12 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
@@ -177,12 +173,11 @@ function StaffListView({ searchTerm: _searchTerm }: { searchTerm: string }) {
                   </div>
                 </td>
                 <td className="px-6 py-5">
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${
-                    member.role.includes('Senior') ? 'bg-teal-50 text-teal-600' :
-                    member.role.includes('Nurse') ? 'bg-teal-50 text-teal-600' :
-                    member.role.includes('Admin') ? 'bg-slate-50 text-slate-600' :
-                    'bg-teal-50 text-teal-600'
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${member.role.includes('Senior') ? 'bg-teal-50 text-teal-600' :
+                      member.role.includes('Nurse') ? 'bg-teal-50 text-teal-600' :
+                        member.role.includes('Admin') ? 'bg-slate-50 text-slate-600' :
+                          'bg-teal-50 text-teal-600'
+                    }`}>
                     {member.role}
                   </span>
                 </td>
@@ -298,11 +293,10 @@ function AttendanceView() {
                 <td className="px-6 py-5 text-sm text-slate-500 font-bold">{rec.date}</td>
                 <td className="px-6 py-5">
                   <div className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full border text-[10px] font-bold ${getStatusBadge(rec.status)}`}>
-                    <div className={`w-1.5 h-1.5 rounded-full ${
-                      rec.status === 'Present' ? 'bg-teal-500' :
-                      rec.status === 'Late' ? 'bg-red-400' :
-                      rec.status === 'Leave' ? 'bg-slate-400' : 'bg-red-600'
-                    }`} />
+                    <div className={`w-1.5 h-1.5 rounded-full ${rec.status === 'Present' ? 'bg-teal-500' :
+                        rec.status === 'Late' ? 'bg-red-400' :
+                          rec.status === 'Leave' ? 'bg-slate-400' : 'bg-red-600'
+                      }`} />
                     <span>{rec.status}</span>
                     <ChevronDown size={12} className="opacity-40" />
                   </div>
@@ -318,7 +312,7 @@ function AttendanceView() {
             ))}
           </tbody>
         </table>
-        
+
         {/* Footer */}
         <div className="p-6 bg-slate-50/30 border-t border-slate-50 flex items-center justify-between">
           <p className="text-xs font-bold text-slate-400">Showing 1-5 of 42 staff members</p>
@@ -347,7 +341,7 @@ function AttendanceView() {
             <span>2.1% from last month</span>
           </div>
         </div>
-        
+
         <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 group hover:shadow-lg transition-all cursor-pointer relative overflow-hidden">
           <div className="flex justify-between items-start mb-6">
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Late Patterns</p>
@@ -374,7 +368,7 @@ function AttendanceView() {
   );
 }
 
-function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
+function SchedulesView() {
   const getShiftBadge = (shift: ShiftType) => {
     switch (shift) {
       case 'Morning': return 'bg-teal-50 text-teal-600';
@@ -389,9 +383,9 @@ function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
       <div className="p-4 md:p-6 border-b border-slate-50 bg-slate-50/10 flex flex-col lg:flex-row gap-4 items-center">
         <div className="relative w-full lg:w-80 group">
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input 
-            type="text" 
-            placeholder="Search staff member..." 
+          <input
+            type="text"
+            placeholder="Search staff member..."
             className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/10 focus:border-teal-500 transition-all"
           />
         </div>
@@ -439,10 +433,9 @@ function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
                 </td>
                 <td className="px-6 py-6">
                   <div className={`inline-flex items-center space-x-2 px-3 py-1.5 rounded-full text-[10px] font-bold ${getShiftBadge(sch.shift)}`}>
-                    <div className={`w-1 h-1 rounded-full ${
-                      sch.shift === 'Morning' ? 'bg-teal-400' :
-                      sch.shift === 'Night' ? 'bg-blue-400' : 'bg-slate-400'
-                    }`} />
+                    <div className={`w-1 h-1 rounded-full ${sch.shift === 'Morning' ? 'bg-teal-400' :
+                        sch.shift === 'Night' ? 'bg-blue-400' : 'bg-slate-400'
+                      }`} />
                     <span>{sch.shift}</span>
                   </div>
                 </td>
@@ -451,11 +444,10 @@ function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
                 <td className="px-6 py-6">
                   <div className="flex items-center justify-center space-x-1.5">
                     {['M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                      <div 
+                      <div
                         key={i}
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold transition-all ${
-                          sch.days.includes(day) ? 'bg-[#134e4a] text-white' : 'bg-slate-100 text-slate-300'
-                        }`}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold transition-all ${sch.days.includes(day) ? 'bg-[#134e4a] text-white' : 'bg-slate-100 text-slate-300'
+                          }`}
                       >
                         {day}
                       </div>
@@ -472,7 +464,7 @@ function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
           </tbody>
         </table>
       </div>
-      
+
       <div className="p-6 bg-slate-50/30 border-t border-slate-50 flex items-center justify-between">
         <p className="text-xs font-bold text-slate-400">Showing 1-3 of 24 staff members</p>
         <div className="flex items-center space-x-2">
@@ -487,7 +479,7 @@ function SchedulesView({ searchTerm: _searchTerm }: { searchTerm: string }) {
   );
 }
 
-function PayrollView({ searchTerm: _searchTerm }: { searchTerm: string }) {
+function PayrollView() {
   const [currentMonth, setCurrentMonth] = useState('October 2023');
 
   return (
@@ -496,7 +488,7 @@ function PayrollView({ searchTerm: _searchTerm }: { searchTerm: string }) {
       <div className="p-4 md:p-6 border-b border-slate-50 bg-slate-50/10 flex flex-col lg:flex-row gap-4 items-center justify-between">
         <div className="flex flex-col md:flex-row items-center gap-3 w-full lg:w-auto">
           <div className="relative w-full sm:w-44 group">
-            <select 
+            <select
               className="w-full appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none cursor-pointer pr-10"
               value={currentMonth}
               onChange={(e) => setCurrentMonth(e.target.value)}
@@ -508,9 +500,9 @@ function PayrollView({ searchTerm: _searchTerm }: { searchTerm: string }) {
           </div>
           <div className="relative w-full lg:w-64 group">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input 
-              type="text" 
-              placeholder="Search staff..." 
+            <input
+              type="text"
+              placeholder="Search staff..."
               className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-teal-500 transition-all"
             />
           </div>

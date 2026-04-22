@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { Layout } from '@/components/Layout';
 import { StatCards } from '@/components/dashboard/StatCards';
-import { TrendChart } from '@/components/dashboard/TrendChart';
 import { AppointmentStatus } from '@/components/dashboard/AppointmentStatus';
-import { CollectionStatus } from '@/components/dashboard/CollectionStatus';
-import { BranchPerformance } from '@/components/dashboard/BranchPerformance';
 import { RecentPatients } from '@/components/dashboard/RecentPatients';
 import { UpcomingAppointments } from '@/components/dashboard/UpcomingAppointments';
 import { useAppData } from '@/context/AppDataContext';
+import { apiService } from '@/services/apiService';
 import AppointmentModal from '@/components/dashboard/AppointmentModal';
 
 export function Dashboard() {
@@ -17,12 +15,7 @@ export function Dashboard() {
   const [timeRange, setTimeRange] = useState('Daily');
 
   const handleSaveAppointment = (data: any) => {
-    const newAppointment = {
-      ...data,
-      id: Math.floor(Math.random() * 10000),
-      initials: data.patientName ? data.patientName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : '??',
-      initialsBg: 'bg-teal-100 text-teal-700'
-    };
+    const newAppointment = apiService.prepareAppointment(data);
     addAppointment(newAppointment);
     setIsModalOpen(false);
   };
@@ -87,17 +80,10 @@ export function Dashboard() {
 
       <StatCards branch={selectedBranch} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="col-span-2 space-y-6">
-          <TrendChart />
-        </div>
-        <div className="col-span-1 space-y-6">
-          <AppointmentStatus branch={selectedBranch} />
-          <CollectionStatus />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
+        <AppointmentStatus branch={selectedBranch} />
       </div>
 
-      <BranchPerformance />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         <RecentPatients branch={selectedBranch} />

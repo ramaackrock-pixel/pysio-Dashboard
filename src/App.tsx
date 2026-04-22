@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Dashboard } from '@/pages/Dashboard';
 import { Login } from '@/pages/Login';
 import { Patients } from '@/pages/Patients';
+import { PatientDetails } from '@/pages/PatientDetails';
 import { Appointments } from '@/pages/Appointments';
 import { MedicalRecords } from '@/pages/MedicalRecords';
 import { Billing } from '@/pages/Billing';
@@ -9,6 +10,7 @@ import { Staff } from '@/pages/Staff';
 import { Branches } from '@/pages/Branches';
 import { Reports } from '@/pages/Reports';
 import { AdmittedPatients } from '@/pages/Admissions';
+import { Revenue } from '@/pages/Revenue';
 import { NotFound } from '@/pages/NotFound';
 import Settings from '@/pages/Settings'
 
@@ -43,6 +45,14 @@ export default function App() {
           }
         />
         <Route
+          path="/patients/:id"
+          element={
+            <PrivateRoute>
+              <PatientDetails />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/appointments"
           element={
             <PrivateRoute>
@@ -55,6 +65,14 @@ export default function App() {
           element={
             <PrivateRoute>
               <MedicalRecords />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/revenue"
+          element={
+            <PrivateRoute>
+              <Revenue />
             </PrivateRoute>
           }
         />

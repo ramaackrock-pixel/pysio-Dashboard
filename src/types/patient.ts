@@ -9,5 +9,12 @@ export interface Patient {
   lastVisit: string;
   status: 'ACTIVE' | 'CRITICAL' | 'PENDING' | 'DISCHARGED';
   statusColor: string;
+  consultedBy: string;
+  diseases: string[];
+  conditions: string[];
+  assignments: string[];
+  assignedDoctor: string;
   initialsBg: string;
+  notes?: string;
+  assessment?: string;
 }

@@ -39,6 +39,14 @@ export default function StaffModal({ isOpen, onClose, onSave }: StaffModalProps)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    // Numeric only validation for mobile
+    if (name === 'mobile') {
+      const numericValue = value.replace(/[^\d]/g, '').substring(0, 10);
+      setFormData((prev: any) => ({ ...prev, [name]: numericValue }));
+      return;
+    }
+    
     setFormData((prev: any) => ({ ...prev, [name]: value }));
   };
 
@@ -100,7 +108,7 @@ export default function StaffModal({ isOpen, onClose, onSave }: StaffModalProps)
                     name="mobile"
                     value={formData.mobile}
                     onChange={handleChange}
-                    placeholder="+91 98765 43210"
+                    placeholder="9XXXXXXXXX"
                     className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:border-[#5ab2b2] focus:ring-2 focus:ring-teal-500/10 font-medium transition-all"
                     required
                   />

@@ -226,6 +226,18 @@ export default function AppointmentModal({ appointment, isOpen, onClose, onSave 
                 className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#5ab2b2] focus:ring-2 focus:ring-teal-500/10 font-medium transition-all"
               />
             </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Next Steps / Notes</label>
+              <textarea
+                name="details.nextSteps"
+                value={formData.details.nextSteps}
+                onChange={handleChange}
+                rows={2}
+                placeholder="Schedule follow-up in 2 weeks..."
+                className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#5ab2b2] focus:ring-2 focus:ring-teal-500/10 font-medium transition-all"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-8 border-t border-slate-100">

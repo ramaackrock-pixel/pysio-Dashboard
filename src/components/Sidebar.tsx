@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Calendar, FileText, CreditCard, UserCircle, Building2, BarChart2, Settings, LogOut, BedDouble, UserPlus, Receipt, DoorOpen, History, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, FileText, CreditCard, UserCircle, Building2, BarChart2, Settings, LogOut, BedDouble, UserPlus, Receipt, DoorOpen, History, ChevronDown, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
@@ -20,6 +20,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     { name: 'Dashboard', icon: <LayoutDashboard size={18} />, href: '/dashboard' },
     { name: 'Patients', icon: <Users size={18} />, href: '/patients' },
     { name: 'Appointments', icon: <Calendar size={18} />, href: '/appointments' },
+    { name: 'Revenue', icon: <TrendingUp size={18} />, href: '/revenue' },
     { 
       name: 'Admitted Patients', 
       icon: <BedDouble size={18} />, 

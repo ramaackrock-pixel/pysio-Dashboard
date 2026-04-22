@@ -10,7 +10,6 @@ export function StatCards({ branch }: { branch: string }) {
   const invoices = branch === 'All Branches' ? allInvoices : allInvoices;
 
   const activeInvoicesCount = invoices.filter(i => i.status !== 'PAID').length;
-  const totalRevenue = invoices.reduce((acc, inv) => acc + inv.paidAmount, 0);
 
   const stats = [
     {
@@ -48,15 +47,6 @@ export function StatCards({ branch }: { branch: string }) {
        iconName: 'BriefcaseMedical',
        iconBg: 'bg-[#e0f4f4]',
        trendBg: 'bg-slate-50 text-slate-500'
-    },
-    {
-       title: 'Revenue Collected',
-       value: `₹${(totalRevenue / 100000).toFixed(1)}L`,
-       change: '+8.7%',
-       trend: 'up',
-       iconName: 'ClipboardClock',
-       iconBg: 'bg-[#e0f4f4]',
-       trendBg: 'bg-emerald-50 text-emerald-600'
     }
   ];
 
@@ -72,7 +62,7 @@ export function StatCards({ branch }: { branch: string }) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {stats.map((stat) => (
         <div 
           key={stat.title} 

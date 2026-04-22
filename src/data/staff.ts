@@ -8,7 +8,7 @@ export const STAFF_MEMBERS: StaffMember[] = [
     role: 'Senior Specialist',
     department: 'Cardiology',
     branch: 'Downtown Clinic',
-    mobile: '+1 (555) 012-3456',
+    mobile: '9876543210',
     status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=100'
   },
@@ -19,7 +19,7 @@ export const STAFF_MEMBERS: StaffMember[] = [
     role: 'Head Nurse',
     department: 'Pediatrics',
     branch: 'Downtown Clinic',
-    mobile: '+1 (555) 012-8822',
+    mobile: '9123456789',
     status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80&w=100'
   },
@@ -30,7 +30,7 @@ export const STAFF_MEMBERS: StaffMember[] = [
     role: 'Admin Support',
     department: 'Operations',
     branch: 'North Wellness',
-    mobile: '+1 (555) 012-9933',
+    mobile: '8877665544',
     status: 'Inactive',
     avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=100'
   },
@@ -41,7 +41,7 @@ export const STAFF_MEMBERS: StaffMember[] = [
     role: 'Specialist',
     department: 'Orthodontics',
     branch: 'North Wellness',
-    mobile: '+1 (555) 012-4411',
+    mobile: '7654321098',
     status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1559839734-2b71f1536780?auto=format&fit=crop&q=80&w=100'
   }

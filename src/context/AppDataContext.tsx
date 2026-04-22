@@ -6,6 +6,8 @@ import { INITIAL_MEDICAL_RECORDS } from '@/data/medicalRecords';
 import { INITIAL_INVOICES } from '@/data/billing';
 import { CLINIC_BRANCHES as INITIAL_BRANCHES } from '@/data/branches';
 import { INITIAL_ADMITTED_PATIENTS, INITIAL_ROOMS } from '@/data/admission';
+import { storageService } from '@/services/storageService';
+import { apiService } from '@/services/apiService';
 
 import type { Patient } from '@/types/patient';
 import type { Appointment } from '@/types/appointment';
@@ -60,55 +62,74 @@ const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
 
 export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [patients, setPatients] = useState<Patient[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('patients') : null;
-    return saved ? JSON.parse(saved) : INITIAL_PATIENTS;
+    const saved = storageService.get<Patient[]>('patients', []);
+    if (saved.length > 0) {
+      // Ensure all saved patients are standardized
+      return saved.map(p => apiService.preparePatient(p));
+    }
+    return INITIAL_PATIENTS.map(p => apiService.preparePatient(p));
   });
 
   const [appointments, setAppointments] = useState<Appointment[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('appointments') : null;
-    return saved ? JSON.parse(saved) : INITIAL_APPOINTMENTS;
+    return storageService.get<Appointment[]>('appointments', INITIAL_APPOINTMENTS);
   });
 
   const [staff, setStaff] = useState<StaffMember[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('staff') : null;
-    return saved ? JSON.parse(saved) : INITIAL_STAFF;
+    return storageService.get<StaffMember[]>('staff', INITIAL_STAFF);
   });
 
   const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('medicalRecords') : null;
-    return saved ? JSON.parse(saved) : INITIAL_MEDICAL_RECORDS;
+    return storageService.get<MedicalRecord[]>('medicalRecords', INITIAL_MEDICAL_RECORDS);
   });
 
   const [invoices, setInvoices] = useState<Invoice[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('invoices') : null;
-    return saved ? JSON.parse(saved) : INITIAL_INVOICES;
+    return storageService.get<Invoice[]>('invoices', INITIAL_INVOICES);
   });
 
   const [branches, setBranches] = useState<ClinicBranch[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('branches') : null;
-    return saved ? JSON.parse(saved) : INITIAL_BRANCHES;
+    return storageService.get<ClinicBranch[]>('branches', INITIAL_BRANCHES);
   });
 
   const [admittedPatients, setAdmittedPatients] = useState<AdmittedPatient[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('admittedPatients') : null;
-    return saved ? JSON.parse(saved) : INITIAL_ADMITTED_PATIENTS;
+    return storageService.get<AdmittedPatient[]>('admittedPatients', INITIAL_ADMITTED_PATIENTS);
   });
 
   const [rooms, setRooms] = useState<Room[]>(() => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('rooms') : null;
-    return saved ? JSON.parse(saved) : INITIAL_ROOMS;
+    return storageService.get<Room[]>('rooms', INITIAL_ROOMS);
   });
 
+  // Sync to storage whenever state changes
   useEffect(() => {
-    localStorage.setItem('patients', JSON.stringify(patients));
-    localStorage.setItem('appointments', JSON.stringify(appointments));
-    localStorage.setItem('staff', JSON.stringify(staff));
-    localStorage.setItem('medicalRecords', JSON.stringify(medicalRecords));
-    localStorage.setItem('invoices', JSON.stringify(invoices));
-    localStorage.setItem('branches', JSON.stringify(branches));
-    localStorage.setItem('admittedPatients', JSON.stringify(admittedPatients));
-    localStorage.setItem('rooms', JSON.stringify(rooms));
-  }, [patients, appointments, staff, medicalRecords, invoices, branches, admittedPatients, rooms]);
+    storageService.set('patients', patients);
+  }, [patients]);
+
+  useEffect(() => {
+    storageService.set('appointments', appointments);
+  }, [appointments]);
+
+  useEffect(() => {
+    storageService.set('staff', staff);
+  }, [staff]);
+
+  useEffect(() => {
+    storageService.set('medicalRecords', medicalRecords);
+  }, [medicalRecords]);
+
+  useEffect(() => {
+    storageService.set('invoices', invoices);
+  }, [invoices]);
+
+  useEffect(() => {
+    storageService.set('branches', branches);
+  }, [branches]);
+
+  useEffect(() => {
+    storageService.set('admittedPatients', admittedPatients);
+  }, [admittedPatients]);
+
+  useEffect(() => {
+    storageService.set('rooms', rooms);
+  }, [rooms]);
 
   // Patients Actions
   const addPatient = (patient: Patient) => setPatients(prev => [patient, ...prev]);

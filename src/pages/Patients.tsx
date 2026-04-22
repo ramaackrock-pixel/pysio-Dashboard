@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { ChevronDown, FilterX, UserPlus, ClipboardCheck, ShieldAlert, ChevronLeft, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import { useSearch } from '@/context/SearchContext';
 import { useAppData } from '@/context/AppDataContext';
+import { apiService } from '@/services/apiService';
 import EditPatient from '../components/dashboard/EditPatient';
 
 const ITEMS_PER_PAGE = 5;
@@ -10,6 +12,7 @@ const ITEMS_PER_PAGE = 5;
 export function Patients() {
   const { searchQuery } = useSearch();
   const { patients, addPatient, updatePatient, deletePatient } = useAppData();
+  const navigate = useNavigate();
   const [branchFilter, setBranchFilter] = useState('All Branches');
   const [statusFilter, setStatusFilter] = useState('All Statuses');
   const [dateFilter, setDateFilter] = useState('');
@@ -46,32 +49,13 @@ export function Patients() {
   };
 
   const handleSavePatient = (updatedPatient: any) => {
-    // Generate appropriate styling for the newly selected status
-    let statusColor = updatedPatient.statusColor;
-    if (updatedPatient.status === 'ACTIVE') statusColor = 'bg-[#e1f5f5] text-[#5ab2b2] border border-[#b2dfdf]';
-    if (updatedPatient.status === 'CRITICAL') statusColor = 'bg-[#fff5f4] text-[#c73a3a] border border-[#ffdbdb]';
-    if (updatedPatient.status === 'PENDING') statusColor = 'bg-[#fff8e6] text-[#b38600] border border-[#ffeca3]';
-    if (updatedPatient.status === 'DISCHARGED') statusColor = 'bg-[#f4f6f8] text-[#5c6d86] border border-[#d6dde9]';
-
-    const finalizedPatient = { ...updatedPatient, statusColor };
+    const finalizedPatient = apiService.preparePatient(updatedPatient);
     
-    // Update initials if the name changed
-    if (finalizedPatient.name) {
-       finalizedPatient.initials = finalizedPatient.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase();
-    }
-
     if (editingPatient) {
       updatePatient(finalizedPatient);
       setEditingPatient(null);
     } else {
-      // Add new patient
-      const newPatient = {
-        ...finalizedPatient,
-        id: finalizedPatient.id || `#PID-${Math.floor(Math.random() * 9000) + 1000}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`,
-        initialsBg: 'bg-teal-100 text-teal-700', // Default bg
-        lastVisit: finalizedPatient.lastVisit || new Date().toLocaleDateString('en-US')
-      };
-      addPatient(newPatient);
+      addPatient(finalizedPatient);
       setIsAddModalOpen(false);
     }
   };
@@ -164,6 +148,7 @@ export function Patients() {
                 <th className="px-6 py-4 font-bold">Patient Name</th>
                 <th className="px-6 py-4 font-bold">Patient ID</th>
                 <th className="px-6 py-4 font-bold">Mobile Contact</th>
+                <th className="px-6 py-4 font-bold">Consulted By</th>
                 <th className="px-6 py-4 font-bold">Last Visit</th>
                 <th className="px-6 py-4 font-bold">Status</th>
                 <th className="px-6 py-4 font-bold text-center">Actions</th>
@@ -171,7 +156,11 @@ export function Patients() {
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
               {paginatedPatients.length > 0 ? paginatedPatients.map((patient) => (
-                <tr key={patient.id} className="hover:bg-slate-50 transition-colors">
+                <tr 
+                  key={patient.id} 
+                  className="hover:bg-slate-50 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/patients/${patient.id}`)}
+                >
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-4">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${patient.initialsBg}`}>
@@ -185,6 +174,7 @@ export function Patients() {
                   </td>
                   <td className="px-6 py-4 font-semibold text-[#5ab2b2]">{patient.id}</td>
                   <td className="px-6 py-4 text-slate-600 font-medium">{patient.contact}</td>
+                  <td className="px-6 py-4 text-slate-600 font-medium">{patient.consultedBy}</td>
                   <td className="px-6 py-4 text-slate-600 font-medium">{patient.lastVisit}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${patient.statusColor}`}>
@@ -192,7 +182,7 @@ export function Patients() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center space-x-2">
+                    <div className="flex items-center justify-center space-x-2" onClick={(e) => e.stopPropagation()}>
                       <button 
                         onClick={() => handleEdit(patient)}
                         className="text-blue-500 hover:text-blue-700 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
@@ -297,6 +287,7 @@ export function Patients() {
 
       <EditPatient 
         patient={editingPatient} 
+        allPatients={patients}
         isOpen={!!editingPatient || isAddModalOpen} 
         onClose={() => { setEditingPatient(null); setIsAddModalOpen(false); }}
         onSave={handleSavePatient}

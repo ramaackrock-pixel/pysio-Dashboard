@@ -13,7 +13,7 @@ export const INITIAL_APPOINTMENTS: Appointment[] = [
     sessionType: 'Initial Consult', 
     status: 'CONFIRMED',
     details: {
-      phone: '+1 (555) 123-4567',
+      phone: '9988776655',
       email: 'alice.m@example.com',
       lastVisit: 'Oct 12, 2023',
       condition: 'Lower Back Pain',
@@ -32,7 +32,7 @@ export const INITIAL_APPOINTMENTS: Appointment[] = [
     sessionType: 'Follow-up', 
     status: 'PENDING',
     details: {
-      phone: '+1 (555) 987-6543',
+      phone: '9123456789',
       email: 'robert.w@example.com',
       lastVisit: 'Oct 20, 2023',
       condition: 'Post-op Knee Rehab',
@@ -51,7 +51,7 @@ export const INITIAL_APPOINTMENTS: Appointment[] = [
     sessionType: 'Diagnostic', 
     status: 'COMPLETED',
     details: {
-      phone: '+1 (555) 456-7890',
+      phone: '8877665544',
       email: 'elena.l@example.com',
       lastVisit: 'Oct 24, 2023',
       condition: 'Shoulder Impingement',
@@ -70,7 +70,7 @@ export const INITIAL_APPOINTMENTS: Appointment[] = [
     sessionType: 'Therapy', 
     status: 'CANCELLED',
     details: {
-      phone: '+1 (555) 012-3456',
+      phone: '7654321098',
       email: 'sam.kim@example.com',
       lastVisit: 'Sep 30, 2023',
       condition: 'Ankle Sprain',
@@ -89,7 +89,7 @@ export const INITIAL_APPOINTMENTS: Appointment[] = [
     sessionType: 'Follow-up', 
     status: 'CONFIRMED',
     details: {
-      phone: '+1 (555) 789-0123',
+      phone: '9876543210',
       email: 'mark.b@example.com',
       lastVisit: 'Oct 15, 2023',
       condition: 'Chronic Neck Pain',

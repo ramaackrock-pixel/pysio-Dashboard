@@ -4,12 +4,13 @@ import type { Patient } from '../../types/patient';
 
 interface EditPatientProps {
   patient: Patient | null;
+  allPatients: Patient[];
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
 }
 
-export default function EditPatient({ patient, isOpen, onClose, onSave }: EditPatientProps) {
+export default function EditPatient({ patient, allPatients, isOpen, onClose, onSave }: EditPatientProps) {
   const [formData, setFormData] = useState<Partial<Patient>>({
     name: '',
     id: '',
@@ -17,8 +18,11 @@ export default function EditPatient({ patient, isOpen, onClose, onSave }: EditPa
     demographics: '',
     branch: 'Central Medical Plaza',
     status: 'ACTIVE',
+    consultedBy: 'Dr. Elias Thorne',
     lastVisit: new Date().toLocaleDateString('en-US')
   });
+
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (patient) {
@@ -31,20 +35,66 @@ export default function EditPatient({ patient, isOpen, onClose, onSave }: EditPa
         demographics: '',
         branch: 'Central Medical Plaza',
         status: 'ACTIVE',
+        consultedBy: 'Dr. Elias Thorne',
         lastVisit: new Date().toLocaleDateString('en-US')
       });
     }
+    setError(null);
   }, [patient, isOpen]);
 
   if (!isOpen) return null;
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Allow backspace, delete, tab, escape, enter
+    if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (e.keyCode === 65 && e.ctrlKey === true) ||
+        (e.keyCode === 67 && e.ctrlKey === true) ||
+        (e.keyCode === 86 && e.ctrlKey === true) ||
+        (e.keyCode === 88 && e.ctrlKey === true) ||
+        // Allow: home, end, left, right
+        (e.keyCode >= 35 && e.keyCode <= 39)) {
+      return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      e.preventDefault();
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    // Numeric only validation for contact
+    if (name === 'contact') {
+      const numericValue = value.replace(/[^\d]/g, '').substring(0, 10);
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      setError(null);
+      return;
+    }
+    
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate phone number length
+    if (formData.contact && formData.contact.length !== 10) {
+      setError('Phone number must be exactly 10 digits.');
+      return;
+    }
+    
+    // Check for duplicate phone number
+    const isDuplicate = allPatients.some(p => 
+      p.contact === formData.contact && (!patient || p.id !== patient.id)
+    );
+
+    if (isDuplicate) {
+      setError('Phone number already exists for another patient.');
+      return;
+    }
+
     onSave(formData);
   };
 
@@ -89,14 +139,21 @@ export default function EditPatient({ patient, isOpen, onClose, onSave }: EditPa
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Contact Number</label>
               <input 
-                type="text" 
+                type="tel" 
                 name="contact"
                 value={formData.contact || ''}
                 onChange={handleChange}
-                placeholder="+1 (555) 000-0000"
-                className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#5ab2b2] focus:ring-2 focus:ring-teal-500/10 font-medium transition-all"
+                onKeyDown={handleKeyDown}
+                placeholder="9XXXXXXXXX"
+                className={`w-full bg-slate-50 border ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10' : 'border-slate-200 focus:border-[#5ab2b2] focus:ring-teal-500/10'} text-slate-700 text-sm rounded-lg px-4 py-2.5 focus:outline-none font-medium transition-all`}
                 required
               />
+              {error && (
+                <p className="mt-1.5 text-xs font-bold text-red-500 flex items-center space-x-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <span>⚠️</span>
+                  <span>{error}</span>
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Demographics</label>
@@ -135,7 +192,21 @@ export default function EditPatient({ patient, isOpen, onClose, onSave }: EditPa
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="CRITICAL">CRITICAL</option>
                 <option value="PENDING">PENDING</option>
-                <option value="DISCHARGED">DISCHARGED</option>
+                {patient && <option value="DISCHARGED">DISCHARGED</option>}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Consulted By</label>
+              <select 
+                name="consultedBy"
+                value={formData.consultedBy || ''}
+                onChange={handleChange}
+                className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#5ab2b2] focus:ring-2 focus:ring-teal-500/10 font-medium transition-all"
+              >
+                <option value="Dr. Elias Thorne">Dr. Elias Thorne</option>
+                <option value="Dr. Sarah Mitchell">Dr. Sarah Mitchell</option>
+                <option value="Dr. Lena Voss">Dr. Lena Voss</option>
+                <option value="Dr. Julianna Dorne">Dr. Julianna Dorne</option>
               </select>
             </div>
             <div className="md:col-span-2">
@@ -146,6 +217,28 @@ export default function EditPatient({ patient, isOpen, onClose, onSave }: EditPa
                 value={formData.lastVisit || ''}
                 onChange={handleChange}
                 placeholder="mm/dd/yyyy"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#5ab2b2] focus:ring-2 focus:ring-teal-500/10 font-medium transition-all"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Initial Assessment</label>
+              <textarea 
+                name="assessment"
+                value={formData.assessment || ''}
+                onChange={handleChange}
+                placeholder="Initial assessment details..."
+                rows={3}
+                className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#5ab2b2] focus:ring-2 focus:ring-teal-500/10 font-medium transition-all"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Patient Notes / Medical History</label>
+              <textarea 
+                name="notes"
+                value={formData.notes || ''}
+                onChange={handleChange}
+                placeholder="Enter any additional notes about the patient..."
+                rows={3}
                 className="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#5ab2b2] focus:ring-2 focus:ring-teal-500/10 font-medium transition-all"
               />
             </div>
