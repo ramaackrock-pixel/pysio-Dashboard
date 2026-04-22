@@ -29,7 +29,6 @@ import { apiService } from '@/services/apiService';
 export function Staff() {
   const { addStaff } = useAppData();
   const [activeTab, setActiveTab] = useState<StaffTab>('List');
-  const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSaveStaff = (data: any) => {
@@ -77,7 +76,7 @@ export function Staff() {
           {(['List', 'Attendance', 'Schedules', 'Payroll'] as StaffTab[]).map((tab) => (
             <button
               key={tab}
-              onClick={() => { setActiveTab(tab); setSearchTerm(''); }}
+              onClick={() => { setActiveTab(tab); }}
               className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === tab
                   ? 'bg-white text-teal-600 shadow-sm border border-slate-200/50'
                   : 'text-slate-500 hover:text-slate-800'

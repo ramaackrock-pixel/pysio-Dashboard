@@ -1,4 +1,3 @@
-import { storageService } from './storageService';
 import type { Patient } from '../types/patient';
 import type { Appointment } from '../types/appointment';
 import type { StaffMember } from '../types/staff';

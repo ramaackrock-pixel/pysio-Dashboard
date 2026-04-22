@@ -62,7 +62,7 @@ export default function EditPatient({ patient, allPatients, isOpen, onClose, onS
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
     // Numeric only validation for contact
